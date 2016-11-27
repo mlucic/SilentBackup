@@ -1,0 +1,89 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:SilentBackup.Styles">
+    <Style x:Key="NonSelectableList" TargetType="{x:Type ListBoxItem}">
+        <!-- Possibly other setters -->
+        <Setter Property="Focusable" Value="False" />
+    </Style>
+
+    <!-- List Box Style -->
+    <Style x:Key="ListBoxStyle" TargetType="ListBox">
+        <Setter Property="Background" Value="#FF131313"/>
+        <Setter Property="BorderThickness" Value="0,1" />
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Hidden"/>
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
+        <Setter Property="IsSynchronizedWithCurrentItem" Value="False"/>
+
+    </Style>
+
+
+
+    <Style x:Key="ListBoxItemContainer" TargetType="{x:Type ListBoxItem}">
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="BorderThickness" Value="0,0,0,1"/>
+
+
+        <!--
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ListBoxItem">
+                    <Border Name="_Border"
+                                SnapsToDevicePixels="true"
+                            Width="Auto"
+                            >
+                        <ContentPresenter />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsSelected" Value="true">
+                            <Setter TargetName="_Border" Property="Background" Value="#33007ACC"/>
+
+                            <Setter Property="Foreground" Value="White"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="true">
+                            <Setter Property="Foreground" Value="Black"/>
+                            <Setter TargetName="_Border" Property="Background" Value="#FF007ACC"/>
+
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        -->
+
+        <Style.Resources>
+            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
+                             Color="Transparent"/>
+
+        </Style.Resources>
+    </Style>
+
+
+    <ControlTemplate x:Key="ListBoxCustomTemplate" TargetType="{x:Type ListBox}">
+        <Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="0,1,0,1" Background="#FF131313" Padding="1" SnapsToDevicePixels="True">
+            <ScrollViewer Focusable="False" Padding="{TemplateBinding Padding}">
+                <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+            </ScrollViewer>
+        </Border>
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsSelected" Value="true">
+                <Setter TargetName="Bd" Property="Background"
+                    Value="{StaticResource SelectedBackgroundBrush}"/>
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Background" TargetName="Bd" Value="#FF131313"/>
+                <Setter Property="BorderBrush" TargetName="Bd" Value="#FFD9D9D9"/>
+
+            </Trigger>
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsGrouping" Value="True"/>
+                    <Condition Property="VirtualizingPanel.IsVirtualizingWhenGrouping" Value="False"/>
+                </MultiTrigger.Conditions>
+                <Setter Property="ScrollViewer.CanContentScroll" Value="False"/>
+            </MultiTrigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+    <SolidColorBrush x:Key="SelectedBackgroundBrush" Color="#DDD" />
+    <SolidColorBrush x:Key="DisabledForegroundBrush" Color="#888" />
+</ResourceDictionary>

@@ -1,0 +1,263 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="SilentBackupService.BackupOperationManager" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="13.5" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>ACAEAAQAAiAAAQCAAAgAAAABAABABAAASAAAAAEAAAY=</HashCode>
+      <FileName>BackupOperationManager.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="SilentBackupService.BackupService" Collapsed="true">
+    <Position X="11.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACIAAAAAEACAAAACEAACAAAAAEAAAAAAAAA=</HashCode>
+      <FileName>BackupService.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SilentBackupService.BackupServiceEntry" Collapsed="true">
+    <Position X="9.75" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
+      <FileName>BackupServiceEntry.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SilentBackupService.AppInfo" Collapsed="true">
+    <Position X="17.5" Y="0.5" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AABAQAAAAAAIAAAAAAAAAAAAAAIAAAAAAABAAAACCAA=</HashCode>
+      <FileName>DomainModels.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SilentBackupService.Configuration" Collapsed="true">
+    <Position X="9.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAQAA=</HashCode>
+      <FileName>DomainModels.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SilentBackupService.BackupOperation" Collapsed="true">
+    <Position X="11.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAgIACIAAAAAAAAAACAAAAAAEAAAAAAAAAAA=</HashCode>
+      <FileName>DomainModels.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SilentBackupService.Path" Collapsed="true">
+    <Position X="16.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAEAAAAAAAAQAAIAAAAAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>DomainModels.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SilentBackupService.Account" Collapsed="true">
+    <Position X="3.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DomainModels.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SilentBackupService.GoogleDriveAccount" Collapsed="true">
+    <Position X="2.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAgAAAAAABAAAAAAAAAAAAA=</HashCode>
+      <FileName>DomainModels.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SilentBackupService.DropBoxAccount" Collapsed="true">
+    <Position X="5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAA=</HashCode>
+      <FileName>DomainModels.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SilentBackupService.OneDriveAccount" Collapsed="true">
+    <Position X="7.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DomainModels.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SilentBackupService.SSHAccount" Collapsed="true">
+    <Position X="0.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DomainModels.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SilentBackupService.FileDescription" Collapsed="true">
+    <Position X="15" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAIAAAAAQAAAAAAAQAAAAAAAAAAAEAAAAAAAA=</HashCode>
+      <FileName>DomainModels.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SilentBackupService.DirectoryDescription" Collapsed="true">
+    <Position X="13.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAIQAAAAAAAAABAAAAAAAAAA=</HashCode>
+      <FileName>DomainModels.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SilentBackupService.Event" Collapsed="true">
+    <Position X="2.75" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>EventHandlers.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SilentBackupService.USBInsertionEvent" Collapsed="true">
+    <Position X="2.75" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAA=</HashCode>
+      <FileName>EventHandlers.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SilentBackupService.LogonEvent" Collapsed="true">
+    <Position X="5" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>EventHandlers.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SilentBackupService.DateTimeEvent" Collapsed="true">
+    <Position X="0.5" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAAAACAACAAAAAAAAAAAgAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>EventHandlers.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SilentBackupService.EventHandler" Collapsed="true">
+    <Position X="2.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAABIAAAAAAAAAAAAAAAAAAAAAAAAAAI=</HashCode>
+      <FileName>EventHandlers.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SilentBackupService.USBInsertionEventHandler" Collapsed="true">
+    <Position X="2.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAI=</HashCode>
+      <FileName>EventHandlers.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SilentBackupService.DateTimeEventHandler" Collapsed="true">
+    <Position X="5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAI=</HashCode>
+      <FileName>EventHandlers.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SilentBackupService.LogonEventHandler" Collapsed="true">
+    <Position X="0.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAI=</HashCode>
+      <FileName>EventHandlers.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SilentBackupService.DebugIO" Collapsed="true">
+    <Position X="9.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>IO.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SilentBackupService.ReportIO" Collapsed="true">
+    <Position X="11.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>IO.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SilentBackupService.ProjectInstaller" Collapsed="true">
+    <Position X="9.75" Y="7.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gCAAAAgAACAAAAAAAACAAAACAAAAEAAAAAACAAAAIAA=</HashCode>
+      <FileName>ProjectInstaller.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SilentBackupService.FileTransfer.DropBoxProvider" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="16.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAAAAAAAAAAAAAEAAAIAAAAAAAAAQAAABAAAAAA=</HashCode>
+      <FileName>FileTransfer\DropBoxProvider.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SilentBackupService.FileTransfer.FileTransferManager" Collapsed="true">
+    <Position X="15.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAACAAAAAAAAAAAAgAAAAAAAAAAAAAABAA=</HashCode>
+      <FileName>FileTransfer\FileTransferManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SilentBackupService.FileTransfer.GoogleDriveProvider" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="11.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAgAAAAEAAAAAAAAAAUAAAIAAAAAAAAAQAAAAAAAAAA=</HashCode>
+      <FileName>FileTransfer\GoogleDriveProvider.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SilentBackupService.FileTransfer.LocalStorageProvider" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="13.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAQAAAAAAAAAA=</HashCode>
+      <FileName>FileTransfer\LocalStorageProvider.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SilentBackupService.FileTransfer.OneDriveProvider" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="15" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAAAAAAAAAAAAAEAAAIAAAAAAAAAQAAABAAAAAA=</HashCode>
+      <FileName>FileTransfer\OneDriveProvider.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SilentBackupService.FileTransfer.SSHProvider" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="11.5" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAQAAAAAAAAAA=</HashCode>
+      <FileName>FileTransfer\SSHProvider.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SilentBackupService.Utility.Labeler" Collapsed="true">
+    <Position X="9.75" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Utility\Labeler.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="SilentBackupService.IEventHandler" Collapsed="true">
+    <Position X="1" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAI=</HashCode>
+      <FileName>EventHandlers.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="SilentBackupService.FileTransfer.IFileTransferProvider" Collapsed="true">
+    <Position X="9.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>FileTransfer\IFileTransferProvider.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="SilentBackupService.ServiceProviders" Collapsed="true">
+    <Position X="9.75" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAAAAAAAAAAEEAAAAgAAABAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DomainModels.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Delegate Name="SilentBackupService.CopyDelegate" Collapsed="true">
+    <Position X="9.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>EventHandlers.cs</FileName>
+    </TypeIdentifier>
+  </Delegate>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
