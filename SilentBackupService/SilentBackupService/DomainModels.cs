@@ -251,7 +251,6 @@ namespace SilentBackupService
 
             switch (propertyName)
             {
-
                 case "Alias":
                     error = ValidateAlias();
                     break;

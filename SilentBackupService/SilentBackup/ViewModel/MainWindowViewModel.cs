@@ -22,12 +22,12 @@ namespace SilentBackup.Classes
     #region EventViewModels
     class EventV
     {
-        public string EventName { get; set;}
+        public string EventName { get; set; }
     }
-  
+
     class USBEventV : EventV
     {
-        public  USBEventV() { }
+        public USBEventV() { }
         public string UsbName { get; set; }
         public string UsbserialNumber { get; set; }
     }
@@ -38,7 +38,7 @@ namespace SilentBackup.Classes
         public DateTime Start { get; set; } // The first occurence of the event
         public DateTime Next { get; set; } // The next occurence of the event
         public int IntervalMinutes { get; set; } // The time in minutes between events. Negative values refer to special values: -1 Means use end of month
-        public bool RunIfMissed { get; set; } 
+        public bool RunIfMissed { get; set; }
     }
     #endregion
 
@@ -62,12 +62,12 @@ namespace SilentBackup.Classes
         /// <summary> 
         ///  Contains information from JSON configuration file
         /// </summary>
-        private Configuration  configuration_;
+        private Configuration configuration_;
 
         /// <summary> 
         ///  instance of View Model class which represents usb events 
         /// </summary>
-        private ObservableCollection<USBEventV>  usbEvents_;
+        private ObservableCollection<USBEventV> usbEvents_;
 
         /// <summary> 
         ///  instance of View Model class which represents date time events 
@@ -93,7 +93,7 @@ namespace SilentBackup.Classes
         }
 
         #region RelayCommands
-        
+
         /// <summary>
         ///  Sets relay commands ( Relay commands provide communication between UI events and ViewModels )
         /// </summary>
@@ -102,7 +102,7 @@ namespace SilentBackup.Classes
 
             // On Delete Backup Operation command, do the following :
             DeleteCommand = new RelayCommand(OnDelete, CanDelete);
-            
+
             // On Add new Backup Operation command, do the following : 
             AddCommand = new RelayCommand(() =>
             {
@@ -110,11 +110,16 @@ namespace SilentBackup.Classes
                 DestinationInfo di = new DestinationInfo() { Path = new SilentBackupService.Path() { AbsolutePath = "enter path here..." } };
                 newBackOp.Destinations.Add(di);
                 BackOps.Add(newBackOp);
+                SelectedBackOp = newBackOp;
                 // DestInfos.Add(di);
-            }, () => { return true; });
+            }, () => {
+                //return BackOps.LastOrDefault() != null ? BackOps.LastOrDefault().IsValid : false; 
+                return true;
+            });
 
             // On Add new Backup Destinaion command, do the following :
-            AddDestinationCommand = new RelayCommand(() => {
+            AddDestinationCommand = new RelayCommand(() =>
+            {
                 DestinationInfo di = new DestinationInfo() { Path = new SilentBackupService.Path() { AbsolutePath = "enter path here..." } };
                 SelectedBackOp.Destinations.Add(di);
                 DestInfos.Add(di);
@@ -127,24 +132,24 @@ namespace SilentBackup.Classes
             }, () => { return SelectedBackOp != null; });
         }
 
-        public RelayCommand DeleteCommand { get; private set; }
+        public ICommand DeleteCommand { get; private set; }
 
-        public RelayCommand AddCommand { get; private set; }
+        public ICommand AddCommand { get; private set; }
 
-        public RelayCommand AddDestinationCommand { get; private set; }
+        public ICommand AddDestinationCommand { get; private set; }
 
-        public RelayCommand SwitchEnabledCommand { get; private set; }
+        public ICommand SwitchEnabledCommand { get; private set; }
 
         /** cont */
         private void OnDelete()
         {
             int toBeDeleted = BackOps.IndexOf(selectedBackup_);
-            bool cd = CanDelete();
-            if (cd) BackOps.Remove(selectedBackup_);
+            BackOps.Remove(selectedBackup_);
             if (BackOps.Count > 0)
             {
                 selectedBackup_ = BackOps.ElementAt((toBeDeleted == 0) ? 0 : (toBeDeleted - 1));
             }
+            else selectedBackup_ = null;
         }
 
         private bool CanDelete()
@@ -196,9 +201,9 @@ namespace SilentBackup.Classes
             //}
 
             //configuration_ = JsonConvert.DeserializeObject<Configuration>(configJson, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All });
-           
+
             backupOperations_ = new ObservableCollection<BackupOperation>(configuration_.BackupOperations);
-            selectedBackup_   = configuration_.BackupOperations.ElementAt(0);
+            selectedBackup_ = configuration_.BackupOperations.Count > 0 ? configuration_.BackupOperations.ElementAt(0) : null;
             if (selectedBackup_ != null)
             {
                 DestInfos = new ObservableCollection<DestinationInfo>(selectedBackup_.Destinations);
@@ -206,7 +211,7 @@ namespace SilentBackup.Classes
             }
         }
 
-        
+
         /// <summary> *TODO
         ///   Saves backup operations on window close (destruction)
         /// </summary>
@@ -280,7 +285,7 @@ namespace SilentBackup.Classes
                         DestInfos = new ObservableCollection<DestinationInfo>(selectedBackup_.Destinations);
 
                         RaisePropertyChanged("SelectedBackOp");
-                        DeleteCommand.RaiseCanExecuteChanged();
+                        //DeleteCommand.RaiseCanExecuteChanged();
                     }
                 }
             }
@@ -305,10 +310,10 @@ namespace SilentBackup.Classes
 
         public ObservableCollection<USBEventV> SelectedUSBEvents
         {
-            get { return usbEvents_;  }
+            get { return usbEvents_; }
             set
             {
-                if(usbEvents_ != value )
+                if (usbEvents_ != value)
                 {
                     usbEvents_ = value;
                     RaisePropertyChanged();

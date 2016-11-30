@@ -22,6 +22,7 @@ using System.Windows.Documents;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using SilentBackup.Classes;
 
 namespace SilentBackup
 {
@@ -41,7 +42,7 @@ namespace SilentBackup
         public MainWindow()
         {
           //  Forcing the application to run as admin so that it can write into the application folder in program files
-            if (IsAdministrator() == false)
+           /* if (IsAdministrator() == false)
             {
                 var exeName = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
                 System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo(exeName);
@@ -49,8 +50,31 @@ namespace SilentBackup
                 System.Diagnostics.Process.Start(startInfo);
                 System.Windows.Application.Current.Shutdown();
                 return;
-            }
+            }*/
+            //RoutedEventHandler(MainWindow_Loaded);
+
+            //this.Loaded += manageUIEditMode((backupList.SelectedItem as BackupOperation).IsValid);
+            this.Loaded += new RoutedEventHandler(MainWindow_Loaded);
             InitializeComponent();
+        }
+
+        void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            ReflectModelState();
+        }
+
+        private void ReflectModelState()
+        {
+            AddLbl.IsEnabled = !EditModeEnabled;
+            DeleteLbl.IsEnabled = EditLbl.IsEnabled = false;
+            if (!EditModeEnabled)
+            {
+                if(backupList.SelectedItem != null)
+                {
+                    DeleteLbl.IsEnabled = EditLbl.IsEnabled = true;
+                }
+            }
+            //DeleteLbl.IsEnabled = EditLbl.IsEnabled = !EditModeEnabled && backupList.SelectedItem != null;
         }
 
         /// <summary>
@@ -60,8 +84,19 @@ namespace SilentBackup
         /// <param name="e"></param>
         private void AddLbl_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            var viewModel = (MainWindowViewModel)DataContext;
+            if (viewModel.AddCommand.CanExecute(null)) viewModel.AddCommand.Execute(null);
             backupList.SelectedIndex = backupList.Items.Count;
             manageUIEditMode(true);
+            ReflectModelState();
+        }
+
+        private void DeleteLbl_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            var viewModel = (MainWindowViewModel)DataContext;
+            if (viewModel.DeleteCommand.CanExecute(null))
+                viewModel.DeleteCommand.Execute(null);
+            ReflectModelState();
         }
 
         /// <summary>
@@ -71,14 +106,15 @@ namespace SilentBackup
         /// <param name="e"></param>
         private void EditLbl_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            var viewModel = (MainWindowViewModel) DataContext;
             int toBeEdited = backupList.SelectedIndex;
           
-
             /* Case nothing was picked up*/
             if (toBeEdited >= 0)
             {
                 manageUIEditMode(true);
             }
+            ReflectModelState();
         }
 
         /// <summary>
@@ -87,7 +123,7 @@ namespace SilentBackup
         /// <param name="editModeEnabled"> Specifies whether user can edit elements or not</param>
         private void manageUIEditMode(bool editModeEnabled)
         {
-
+            EditModeEnabled = editModeEnabled;
             var switchColour =  (editModeEnabled) ? Color.FromArgb(255, (byte)51, (byte)153, (byte)255) 
                                                   : Color.FromRgb((byte)255,(byte)255,(byte)255);
 
@@ -166,10 +202,8 @@ namespace SilentBackup
         /// <param name="e"></param>
         private void SaveBtn_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (backupList.SelectedItem != null)
-            {
-                manageUIEditMode(false);
-            }
+            manageUIEditMode(false);
+            ReflectModelState();
         }
 
         private void EnableBtn_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -196,6 +230,8 @@ namespace SilentBackup
         }
 
         private string pathPlaceholder = "specify path here...";
+
+        public bool EditModeEnabled { get; private set; }
 
         /// <summary>
         ///  Adds Placeholder to textBox
@@ -268,6 +304,11 @@ namespace SilentBackup
                 
 
             }
+        }
+
+        private void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ReflectModelState();
         }
     }
 }

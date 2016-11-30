@@ -11,9 +11,7 @@
         mc:Ignorable="d"
         >
 
-    <Window.DataContext>
-        <local:MainWindowViewModel />
-    </Window.DataContext>
+    <Window.DataContext>        <local:MainWindowViewModel />    </Window.DataContext>
 
 
     <!-- Shortcuts for commands  -->
@@ -96,7 +94,7 @@
                  ItemsSource ="{Binding BackOps}"
                  SelectedItem="{Binding Path=SelectedBackOp, Mode=TwoWay}"
                  Template="{DynamicResource ListBoxCustomTemplate}"
-                 Foreground="{StaticResource SB_PaleWhite}"
+                 Foreground="{StaticResource SB_PaleWhite}" SelectionChanged="OnSelectionChanged"
                  >
             <ListBox.ItemTemplate  >
                 <DataTemplate >
@@ -157,7 +155,7 @@
                          />
 
 
-   <!--        <Label 
+                    <!--        <Label 
                     Foreground="{StaticResource SB_PaleWhite}" 
                         HorizontalAlignment="Center"
 
@@ -320,7 +318,7 @@
                                                     </Style>
                                                 </Image.Style>
                                             </Image>
-                                           
+
                                             <ComboBox Style="{DynamicResource CustomCombo}" HorizontalAlignment="Center"
                                                       Width="Auto"
                                                       ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.ProviderList}"
@@ -460,9 +458,9 @@
                     IsEnabled="False"
                     Visibility="Hidden"
                    >
-                <Label.InputBindings>
+                <!--<Label.InputBindings>
                     <MouseBinding  MouseAction="LeftClick" />
-                </Label.InputBindings>
+                </Label.InputBindings>-->
             </Label>
             <!--  Disable / Enable Label -->
             <Label          Height="30"
@@ -471,11 +469,11 @@
                             MouseLeftButtonDown="EnableBtn_MouseLeftButtonDown"
                          >
 
-                <i:Interaction.Triggers>
+                <!--<i:Interaction.Triggers>
                     <i:EventTrigger EventName="MouseLeftButtonDown" >
                         <i:InvokeCommandAction Command="{Binding SwitchEnabledCommand}" />
                     </i:EventTrigger>
-                </i:Interaction.Triggers>
+                </i:Interaction.Triggers>-->
             </Label>
         </StackPanel>
         <!-- **************** Icon log in the right botton corner ***************** -->
@@ -506,16 +504,14 @@
                     Height="Auto"
                     VerticalAlignment="Top" Width="40"
                     Style= "{StaticResource LabelButtonStyle}"
-                    Margin="0,0,13,0" MouseLeftButtonDown="AddLbl_MouseLeftButtonDown"
-                       
-                >
+                    Margin="0,0,13,0" MouseLeftButtonDown="AddLbl_MouseLeftButtonDown">
 
-                <i:Interaction.Triggers>
+                <!--<i:Interaction.Triggers>
                     <i:EventTrigger EventName="MouseLeftButtonDown" >
                         <i:InvokeCommandAction Command="{Binding AddCommand}" />
                     </i:EventTrigger>
-                </i:Interaction.Triggers>
-                
+                </i:Interaction.Triggers>-->
+
 
             </Label>
 
@@ -527,6 +523,7 @@
                     Height="Auto"
                     VerticalAlignment="Top" Width="40"
                     Margin="0,0,13,0"
+                    IsEnabled="False"
                     Style= "{StaticResource LabelButtonStyle}"
                    MouseLeftButtonDown="EditLbl_MouseLeftButtonDown"    
                    >
@@ -541,11 +538,12 @@
                     Height="Auto"
                     VerticalAlignment="Top" Width="Auto"
                     Style = "{StaticResource LabelButtonStyle}"
+                    MouseLeftButtonDown="DeleteLbl_MouseLeftButtonDown" 
                    >
                 <!-- ViewModel - call DeleteCommand on BackupList-->
-                <Label.InputBindings>
+                <!--<Label.InputBindings>
                     <MouseBinding Command="{Binding DeleteCommand}" MouseAction="LeftClick" />
-                </Label.InputBindings>
+                </Label.InputBindings>-->
             </Label>
 
         </StackPanel>
