@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using Google.Apis.Auth.OAuth2.Responses;
 using System.ComponentModel;
+using System.Collections.ObjectModel;
+using System.Xml.Serialization;
 
 namespace SilentBackupService
 {
@@ -47,6 +49,7 @@ namespace SilentBackupService
     /// <summary>
     /// Service providers which can be interfaced with through the application
     /// </summary>
+    [Serializable]
     public enum ServiceProviders {
         /// <summary>
         /// Local file system, including USB storage devices and other harddrives viewable from the local file system
@@ -78,45 +81,56 @@ namespace SilentBackupService
     /// <summary>
     /// Contains user defined backup operations and the triggers which result in their execution
     /// </summary>
+    [Serializable]
     public class Configuration
     {
         /// <summary>
         /// Collection of backup operations that the user has defined
         /// </summary>
-        public ICollection<BackupOperation> BackupOperations { get; set; }
+        public Collection<BackupOperation> BackupOperations { get; set; }
         /// <summary>
         /// Collection of triggers that the user has defined
         /// </summary>
-        public ICollection<Event> Triggers { get; set; }
+        public Collection<Event> Triggers { get; set; }
         /// <summary>
         /// Constructor for configuration
         /// </summary>
         public Configuration()
         {
-            BackupOperations = new List<BackupOperation>();
-            Triggers = new List<Event>();
+            BackupOperations = new Collection<BackupOperation>();
+            Triggers = new Collection<Event>();
         }
     }
 
     /// <summary>
     /// Contains user definitions for a single backup operation
     /// </summary>
+    [Serializable]
     public class BackupOperation : IDataErrorInfo
     {
         /// <summary>
         /// Abstract base class defining a label that will be used to manipulate the destination path name
         /// </summary>
+        [Serializable]
+        [XmlInclude(typeof(OverwriteLabel))]
+        [XmlInclude(typeof(IndexedLabel))]
+        [XmlInclude(typeof(DateTimeStampedLabel))]
         public abstract class Label
         {
+            public Label()
+            {
 
+            }
         }
         /// <summary>
         /// Destination label defining that the destination is to be overwritten
         /// </summary>
+        [Serializable]
         public class OverwriteLabel : Label { }
         /// <summary>
         /// Destination label for appending an index
         /// </summary>
+        [Serializable]
         public class IndexedLabel : Label
         {
             /// <summary>
@@ -139,6 +153,7 @@ namespace SilentBackupService
         /// <summary>
         /// Destination label for appending a date time stamp
         /// </summary>
+        [Serializable]
         public class DateTimeStampedLabel : Label
         {
             /// <summary>
@@ -156,8 +171,13 @@ namespace SilentBackupService
         /// <summary>
         /// Information that defines a destination
         /// </summary>
+        [Serializable]
         public class DestinationInfo
         {
+            public DestinationInfo()
+            {
+
+            }
             /// <summary>
             /// Path to the destination directory
             /// </summary>
@@ -335,6 +355,7 @@ namespace SilentBackupService
     /// <summary>
     /// Contains detailed information regarding a path that is targeted for backup
     /// </summary>
+    [Serializable]
     public class Path
     {
         /// <summary>
@@ -373,13 +394,23 @@ namespace SilentBackupService
     /// <summary>
     /// Abstract base class defining user authentication details
     /// </summary>
+    [Serializable]
+    [XmlInclude(typeof(GoogleDriveAccount))]
+    [XmlInclude(typeof(DropBoxAccount))]
+    [XmlInclude(typeof(OneDriveAccount))]
+    [XmlInclude(typeof(SSHAccount))]
     public abstract class Account
     {
+        public Account()
+        {
+
+        }
     }
 
     /// <summary>
     /// User authentication details for the Google Drive service provider
     /// </summary>
+    [Serializable]
     public class GoogleDriveAccount : Account
     {
         /// <summary>
@@ -400,31 +431,50 @@ namespace SilentBackupService
             UserId = userId;
             UserToken = token;
         }
+        public GoogleDriveAccount()
+        {
+
+        }
     }
 
     /// <summary>
     /// User authentication details for the DropBox service provider
     /// </summary>
+    [Serializable]
     public class DropBoxAccount : Account
     {
         /// <summary>
         /// DropBox user token
         /// </summary>
         public string UserToken { get; set; }
+        public DropBoxAccount()
+        {
+
+        }
     }
 
     /// <summary>
     /// User authentication details for the One Drive service provider
     /// </summary>
+    [Serializable]
     public class OneDriveAccount : Account
     {
+        public OneDriveAccount()
+        {
+
+        }
     }
 
     /// <summary>
     /// User authentication details for the SSH protocol
     /// </summary>
+    [Serializable]
     public class SSHAccount : Account
     {
+        public SSHAccount()
+        {
+
+        }
     }
 
     /// <summary>

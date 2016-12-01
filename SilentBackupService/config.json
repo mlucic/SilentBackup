@@ -1,1 +1,5 @@
-{"$type":"SilentBackupService.Configuration, SilentBackupService","BackupOperations":{"$type":"System.Collections.Generic.List`1[[SilentBackupService.BackupOperation, SilentBackupService]], mscorlib","$values":[]},"Triggers":{"$type":"System.Collections.Generic.List`1[[SilentBackupService.Event, SilentBackupService]], mscorlib","$values":[]}}
+<?xml version="1.0" encoding="utf-8"?>
+<Configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <BackupOperations />
+  <Triggers />
+</Configuration>

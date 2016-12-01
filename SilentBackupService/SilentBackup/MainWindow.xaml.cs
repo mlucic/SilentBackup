@@ -31,7 +31,6 @@ namespace SilentBackup
     /// </summary>
     public partial class MainWindow : Window
     {
-        
         private static bool IsAdministrator()
         {
             WindowsIdentity identity = WindowsIdentity.GetCurrent();
@@ -41,40 +40,41 @@ namespace SilentBackup
 
         public MainWindow()
         {
-          //  Forcing the application to run as admin so that it can write into the application folder in program files
-           /* if (IsAdministrator() == false)
+            //  Forcing the application to run as admin so that it can write into the application folder in program files
+            bool adminMode = false;
+            if (adminMode)
             {
-                var exeName = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
-                System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo(exeName);
-                startInfo.Verb = "runas";
-                System.Diagnostics.Process.Start(startInfo);
-                System.Windows.Application.Current.Shutdown();
-                return;
-            }*/
+                if (IsAdministrator() == false)
+                {
+                    var exeName = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
+                    System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo(exeName);
+                    startInfo.Verb = "runas";
+                    System.Diagnostics.Process.Start(startInfo);
+                    System.Windows.Application.Current.Shutdown();
+                    return;
+                }
+            }
             //RoutedEventHandler(MainWindow_Loaded);
 
             //this.Loaded += manageUIEditMode((backupList.SelectedItem as BackupOperation).IsValid);
             this.Loaded += new RoutedEventHandler(MainWindow_Loaded);
             InitializeComponent();
+            this.DataContext = new MainWindowViewModel();
         }
 
         void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
+            var viewModel = (MainWindowViewModel)DataContext;
+            viewModel.LoadConfiguration();
+            viewModel.InitRelayCommands();
             ReflectModelState();
         }
 
         private void ReflectModelState()
         {
+            var viewModel = (MainWindowViewModel)DataContext;
             AddLbl.IsEnabled = !EditModeEnabled;
-            DeleteLbl.IsEnabled = EditLbl.IsEnabled = false;
-            if (!EditModeEnabled)
-            {
-                if(backupList.SelectedItem != null)
-                {
-                    DeleteLbl.IsEnabled = EditLbl.IsEnabled = true;
-                }
-            }
-            //DeleteLbl.IsEnabled = EditLbl.IsEnabled = !EditModeEnabled && backupList.SelectedItem != null;
+            DeleteLbl.IsEnabled = EditLbl.IsEnabled = (!EditModeEnabled && backupList.SelectedItem != null);
         }
 
         /// <summary>
@@ -106,9 +106,9 @@ namespace SilentBackup
         /// <param name="e"></param>
         private void EditLbl_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            var viewModel = (MainWindowViewModel) DataContext;
+            var viewModel = (MainWindowViewModel)DataContext;
             int toBeEdited = backupList.SelectedIndex;
-          
+
             /* Case nothing was picked up*/
             if (toBeEdited >= 0)
             {
@@ -124,12 +124,12 @@ namespace SilentBackup
         private void manageUIEditMode(bool editModeEnabled)
         {
             EditModeEnabled = editModeEnabled;
-            var switchColour =  (editModeEnabled) ? Color.FromArgb(255, (byte)51, (byte)153, (byte)255) 
-                                                  : Color.FromRgb((byte)255,(byte)255,(byte)255);
+            var switchColour = (editModeEnabled) ? Color.FromArgb(255, (byte)51, (byte)153, (byte)255)
+                                                  : Color.FromRgb((byte)255, (byte)255, (byte)255);
 
             /* Enable/Disable TextBoxes ( fields that you can type in ) */
             BackupAlias.IsEnabled = editModeEnabled;
-           
+
 
             /* Disable/Enable selection of the list of backups */
             backupList.IsHitTestVisible = !editModeEnabled;
@@ -142,23 +142,23 @@ namespace SilentBackup
                 {
                     stack.IsEnabled = editModeEnabled;
                 }
-   
+
             }
             /* Disable/Enable Source */
             SourceStack.IsEnabled = editModeEnabled;
 
             /* Disable/Enable buttons */
             DeleteLbl.IsEnabled = !editModeEnabled;
-            EditLbl.IsEnabled   = !editModeEnabled;
-            AddLbl.IsEnabled    = !editModeEnabled;
+            EditLbl.IsEnabled = !editModeEnabled;
+            AddLbl.IsEnabled = !editModeEnabled;
 
 
             /* Set visiblility of some elements */
-            SaveBtn.IsEnabled  =  editModeEnabled;
-            SaveBtn.Visibility =  (editModeEnabled) ? Visibility.Visible : Visibility.Hidden;
+            SaveBtn.IsEnabled = editModeEnabled;
+            SaveBtn.Visibility = (editModeEnabled) ? Visibility.Visible : Visibility.Hidden;
 
             /* Set colour of some elements */
-            BackupAlias.Foreground    = new SolidColorBrush(switchColour);
+            BackupAlias.Foreground = new SolidColorBrush(switchColour);
             DetailsBorder.BorderBrush = new SolidColorBrush(switchColour);
 
             if (editModeEnabled)
@@ -202,6 +202,8 @@ namespace SilentBackup
         /// <param name="e"></param>
         private void SaveBtn_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            var viewModel = (MainWindowViewModel)DataContext;
+            if (viewModel.SaveCommand.CanExecute(null)) viewModel.SaveCommand.Execute(null);
             manageUIEditMode(false);
             ReflectModelState();
         }
@@ -211,7 +213,8 @@ namespace SilentBackup
             if (EnableBtn.Content.ToString() == "Disable")
             {
                 EnableBtn.Content = "Enable";
-            } else
+            }
+            else
             {
                 EnableBtn.Content = "Disable";
             }
@@ -286,28 +289,32 @@ namespace SilentBackup
                 {
                     combo = element as ComboBox;
                 }
-
             }
 
-/*
-            Provider provider = combo.SelectedValue as Provider;
+            /*
+                        Provider provider = combo.SelectedValue as Provider;
 
-           if (provider == Provider.DropBox)
-            {
+                       if (provider == Provider.DropBox)
+                        {
 
-            }
-            */
+                        }
+                        */
             // Display OpenFileDialog by calling ShowDialog method 
             Nullable<bool> result = dlg.ShowDialog();
             if (result == true)
             {
-                
+
 
             }
         }
 
         private void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            var viewModel = (MainWindowViewModel)DataContext;
+            foreach (var item in e.AddedItems)
+            {
+                viewModel.SelectedBackup = item as BackupOperation;
+            }
             ReflectModelState();
         }
     }

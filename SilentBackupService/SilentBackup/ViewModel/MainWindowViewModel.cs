@@ -15,6 +15,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Media;
 using System.Drawing;
 using static SilentBackupService.BackupOperation;
+using SilentBackupService.Utility;
+using System.Collections.Specialized;
 
 namespace SilentBackup.Classes
 {
@@ -86,10 +88,16 @@ namespace SilentBackup.Classes
         public MainWindowViewModel()
         {
             /* Grabs configuraton from JSON file */
-            LoadConfiguration();
+            //configuration_ = new Configuration();
 
             /* Set Relay Commands */
             InitRelayCommands();
+            //
+        }
+
+        private void UpdateBackupListUI(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            RaisePropertyChanged("BackOps");
         }
 
         #region RelayCommands
@@ -97,22 +105,25 @@ namespace SilentBackup.Classes
         /// <summary>
         ///  Sets relay commands ( Relay commands provide communication between UI events and ViewModels )
         /// </summary>
-        private void InitRelayCommands()
+        public void InitRelayCommands()
         {
-
+            //BackOps.CollectionChanged += UpdateBackupListUI;
             // On Delete Backup Operation command, do the following :
             DeleteCommand = new RelayCommand(OnDelete, CanDelete);
 
             // On Add new Backup Operation command, do the following : 
             AddCommand = new RelayCommand(() =>
             {
-                var newBackOp = new BackupOperation() { Alias = "New Backup Operation" };
-                DestinationInfo di = new DestinationInfo() { Path = new SilentBackupService.Path() { AbsolutePath = "enter path here..." } };
+                var newBackOp = new BackupOperation() { Alias = "New Backup" };
+                DestinationInfo di = new DestinationInfo() { Path = new SilentBackupService.Path() { AbsolutePath = "Enter absolute path" } };
                 newBackOp.Destinations.Add(di);
+                newBackOp.Source.AbsolutePath = "Enter absolute path";
                 BackOps.Add(newBackOp);
-                SelectedBackOp = newBackOp;
+                SelectedBackup = newBackOp;
+                RaisePropertyChanged("BackOps");
                 // DestInfos.Add(di);
-            }, () => {
+            }, () =>
+            {
                 //return BackOps.LastOrDefault() != null ? BackOps.LastOrDefault().IsValid : false; 
                 return true;
             });
@@ -121,15 +132,38 @@ namespace SilentBackup.Classes
             AddDestinationCommand = new RelayCommand(() =>
             {
                 DestinationInfo di = new DestinationInfo() { Path = new SilentBackupService.Path() { AbsolutePath = "enter path here..." } };
-                SelectedBackOp.Destinations.Add(di);
+                SelectedBackup.Destinations.Add(di);
                 DestInfos.Add(di);
-            }, () => { return SelectedBackOp != null; });
+            }, () => { return SelectedBackup != null; });
 
             // On Toggle Enables/Disabled command, do the following :
             SwitchEnabledCommand = new RelayCommand(() =>
             {
-                SelectedBackOp.Enabled = !SelectedBackOp.Enabled;
-            }, () => { return SelectedBackOp != null; });
+                SelectedBackup.Enabled = !SelectedBackup.Enabled;
+            }, () => { return SelectedBackup != null; });
+
+            SaveCommand = new RelayCommand(() =>
+            {
+                configuration_.BackupOperations = BackOps;
+                //configuration_.Triggers = this.dateTimeEvents_.Concat(this.usbEvents_ as IEnumerable<Event>);
+
+                //string configJson = JsonConvert.SerializeObject(configuration_, new JsonSerializerSettings()
+                //{
+                //    TypeNameHandling = TypeNameHandling.All,
+                //    TypeNameAssemblyFormat = System.Runtime.Serialization.Formatters.FormatterAssemblyStyle.Simple
+                //});
+
+                //using (var configWriter = new StreamWriter(AppInfo.ConfigPath))
+                //{
+                //    configWriter.WriteLineAsync(configJson).Wait();
+                //}
+                WriteToBinaryFile<Configuration>(AppInfo.ConfigPath, configuration_);
+                RaisePropertyChanged("BackOps");
+            }, () => { return true; });
+
+            //SelectCommand = new RelayCommand<object>((p) => {
+                
+            //});
         }
 
         public ICommand DeleteCommand { get; private set; }
@@ -140,6 +174,14 @@ namespace SilentBackup.Classes
 
         public ICommand SwitchEnabledCommand { get; private set; }
 
+        public ICommand SaveCommand { get; private set; }
+
+        //public ICommand SelectCommand { get; private set; }
+
+        //using (var configWriter = new StreamWriter(AppInfo.ConfigPath))
+        //        {
+        //            configWriter.WriteLineAsync(configJson).Wait();
+        //        }
         /** cont */
         private void OnDelete()
         {
@@ -150,6 +192,8 @@ namespace SilentBackup.Classes
                 selectedBackup_ = BackOps.ElementAt((toBeDeleted == 0) ? 0 : (toBeDeleted - 1));
             }
             else selectedBackup_ = null;
+            RaisePropertyChanged("SelectedBackup");
+            RaisePropertyChanged("BackOps");
         }
 
         private bool CanDelete()
@@ -160,35 +204,64 @@ namespace SilentBackup.Classes
 
         #region LoadAndSaveConfigurations
         /* Consider async implementation - Loads file OnLoad */
-        private void LoadConfiguration()
+
+        private void WriteToBinaryFile<T>(string filePath, T objectToWrite) where T : Configuration
+        {
+            XmlSerializer.WriteToXmlFile<Configuration>(filePath, objectToWrite);
+            return;
+            using (Stream stream = File.Open(filePath, FileMode.Create))
+            {
+                var binaryFormatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+                binaryFormatter.Serialize(stream, objectToWrite);
+            }
+        }
+
+        private T ReadFromBinaryFile<T>(string filePath) where T : Configuration
+        {
+            var retval = XmlSerializer.ReadFromXmlFile<Configuration>(filePath);
+
+            return retval as T;
+
+            using (Stream stream = File.Open(filePath, FileMode.Open))
+            {
+                var binaryFormatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+                return (T)binaryFormatter.Deserialize(stream);
+            }
+        }
+
+        public void LoadConfiguration()
         {
             try
             {
-                string configJson;
-                using (StreamReader sr = new StreamReader(AppInfo.ConfigPath))
-                {
-                    configJson = sr.ReadToEnd();
-                }
+                //string configJson;
+                //using (StreamReader sr = new StreamReader(AppInfo.ConfigPath))
+                //{
+                //    configJson = sr.ReadToEnd();
+                //}
 
-                configuration_ = JsonConvert.DeserializeObject<Configuration>(configJson, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All });
+                //configuration_ = JsonConvert.DeserializeObject<Configuration>(configJson, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All });
+                configuration_ = ReadFromBinaryFile<Configuration>(AppInfo.ConfigPath);
             }
             catch (Exception ex)
             {
                 // No config to load, make new config
-                configuration_ = new Configuration();
-                string configJson = JsonConvert.SerializeObject(configuration_, new JsonSerializerSettings()
-                {
-                    TypeNameHandling = TypeNameHandling.All,
-                    TypeNameAssemblyFormat = System.Runtime.Serialization.Formatters.FormatterAssemblyStyle.Simple
-                });
+                //string configJson = JsonConvert.SerializeObject(configuration_, new JsonSerializerSettings()
+                //{
+                //    TypeNameHandling = TypeNameHandling.All,
+                //    TypeNameAssemblyFormat = System.Runtime.Serialization.Formatters.FormatterAssemblyStyle.Simple
+                //});
 
-                using (var configWriter = new StreamWriter(AppInfo.ConfigPath))
-                {
-                    configWriter.WriteLineAsync(configJson).Wait();
-                }
+                //using (var configWriter = new StreamWriter(AppInfo.ConfigPath))
+                //{
+                //    configWriter.WriteLineAsync(configJson).Wait();
+                //}
             }
 
-
+            if (configuration_ == null)
+            {
+                configuration_ = new Configuration();
+                WriteToBinaryFile<Configuration>(AppInfo.ConfigPath, configuration_);
+            }
 
 
 
@@ -209,6 +282,7 @@ namespace SilentBackup.Classes
                 DestInfos = new ObservableCollection<DestinationInfo>(selectedBackup_.Destinations);
                 /* TODO : Init events */
             }
+            RaisePropertyChanged("BackOps");
         }
 
 
@@ -236,7 +310,7 @@ namespace SilentBackup.Classes
                 if (value != backupOperations_)
                 {
                     backupOperations_ = value;
-                    RaisePropertyChanged();
+                    RaisePropertyChanged("BackOps");
                 }
             }
         }
@@ -244,7 +318,7 @@ namespace SilentBackup.Classes
         /// <summary> 
         /// Selected backup operation (appears in the right panel with operations details)
         /// </summary>
-        public BackupOperation SelectedBackOp
+        public BackupOperation SelectedBackup
         {
             get { return selectedBackup_; }
             set
@@ -302,7 +376,7 @@ namespace SilentBackup.Classes
                 if (destInfos_ != value)
                 {
                     destInfos_ = value;
-                    RaisePropertyChanged();
+                    RaisePropertyChanged("DestInfos");
                 }
 
             }
@@ -316,7 +390,7 @@ namespace SilentBackup.Classes
                 if (usbEvents_ != value)
                 {
                     usbEvents_ = value;
-                    RaisePropertyChanged();
+                    RaisePropertyChanged("SelectedUSBEvents");
                 }
 
             }
@@ -330,7 +404,7 @@ namespace SilentBackup.Classes
                 if (dateTimeEvents_ != value)
                 {
                     dateTimeEvents_ = value;
-                    RaisePropertyChanged();
+                    RaisePropertyChanged("SelectedDateTimeEvents");
                 }
 
             }

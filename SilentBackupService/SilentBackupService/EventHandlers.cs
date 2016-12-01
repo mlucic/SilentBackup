@@ -5,12 +5,17 @@ using System.ComponentModel;
 using System.Linq;
 using System.Management;
 using System.Threading;
+using System.Xml.Serialization;
 
 namespace SilentBackupService
 {
     /// <summary>
     /// Abstract base class describing an event that is associated with one or more operations as a trigger
     /// </summary>
+    [Serializable]
+    [XmlInclude(typeof(USBInsertionEvent))]
+    [XmlInclude(typeof(DateTimeEvent))]
+    [XmlInclude(typeof(LogonEvent))]
     public abstract class Event
     {
         /// <summary>
@@ -28,6 +33,10 @@ namespace SilentBackupService
         public Event(int id)
         {
             Id = id;
+        }
+        public Event()
+        {
+
         }
     }
 
@@ -55,6 +64,10 @@ namespace SilentBackupService
             VolumeSerialNumber = vsn;
             Name = name;
         }
+        public USBInsertionEvent()
+        {
+
+        }
     }
 
     /// <summary>
@@ -68,6 +81,10 @@ namespace SilentBackupService
         /// <param name="id">Internal identifier of the event</param>
         public LogonEvent(int id) : base(id)
         {
+        }
+        public LogonEvent()
+        {
+
         }
     }
 
@@ -116,6 +133,10 @@ namespace SilentBackupService
             Next = Start.AddMinutes(intervalMins);
             IntervalMinutes = intervalMins;
             RunIfMissed = rim;
+        }
+        public DateTimeEvent()
+        {
+
         }
     }
 
