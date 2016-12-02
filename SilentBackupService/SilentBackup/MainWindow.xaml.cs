@@ -54,19 +54,18 @@ namespace SilentBackup
                     return;
                 }
             }
-            //RoutedEventHandler(MainWindow_Loaded);
 
             //this.Loaded += manageUIEditMode((backupList.SelectedItem as BackupOperation).IsValid);
             this.Loaded += new RoutedEventHandler(MainWindow_Loaded);
-            InitializeComponent();
             this.DataContext = new MainWindowViewModel();
+            InitializeComponent();
         }
 
         void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             var viewModel = (MainWindowViewModel)DataContext;
             viewModel.LoadConfiguration();
-            viewModel.InitRelayCommands();
+            //viewModel.InitRelayCommands();
             ReflectModelState();
         }
 
@@ -86,7 +85,8 @@ namespace SilentBackup
         {
             var viewModel = (MainWindowViewModel)DataContext;
             if (viewModel.AddCommand.CanExecute(null)) viewModel.AddCommand.Execute(null);
-            backupList.SelectedIndex = backupList.Items.Count;
+            // backupList.SelectedValue = viewModel.SelectedBackup;
+            AddModeEnabled = true;
             manageUIEditMode(true);
             ReflectModelState();
         }
@@ -96,6 +96,7 @@ namespace SilentBackup
             var viewModel = (MainWindowViewModel)DataContext;
             if (viewModel.DeleteCommand.CanExecute(null))
                 viewModel.DeleteCommand.Execute(null);
+
             ReflectModelState();
         }
 
@@ -118,6 +119,33 @@ namespace SilentBackup
         }
 
         /// <summary>
+        ///  Called on "Save" button click event 
+        ///  Changes edit mode of UI back to 'false', so elements can't be edited by user
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SaveBtn_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            var viewModel = (MainWindowViewModel)DataContext;
+            if (viewModel.SaveCommand.CanExecute(null)) viewModel.SaveCommand.Execute(null);
+            manageUIEditMode(false);
+            ReflectModelState();
+        }
+
+        private void DiscardBtn_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            var viewModel = (MainWindowViewModel)DataContext;
+            if (viewModel.DiscardCommand.CanExecute(AddModeEnabled ? null : rollback))
+                viewModel.DiscardCommand.Execute(AddModeEnabled ? null : rollback);
+
+            if (AddModeEnabled) AddModeEnabled = false;
+            manageUIEditMode(false);
+            ReflectModelState();
+        }
+
+        private BackupOperation rollback;
+
+        /// <summary>
         ///   Toggles UI "Edit Mode"
         /// </summary>
         /// <param name="editModeEnabled"> Specifies whether user can edit elements or not</param>
@@ -130,6 +158,9 @@ namespace SilentBackup
             /* Enable/Disable TextBoxes ( fields that you can type in ) */
             BackupAlias.IsEnabled = editModeEnabled;
 
+            /* Create a copy of the selected backup prior to editing for rollback purposes */
+            if (editModeEnabled)
+                rollback = (backupList.SelectedItem as BackupOperation).Clone();
 
             /* Disable/Enable selection of the list of backups */
             backupList.IsHitTestVisible = !editModeEnabled;
@@ -154,8 +185,8 @@ namespace SilentBackup
 
 
             /* Set visiblility of some elements */
-            SaveBtn.IsEnabled = editModeEnabled;
-            SaveBtn.Visibility = (editModeEnabled) ? Visibility.Visible : Visibility.Hidden;
+            SaveBtn.IsEnabled = DiscardBtn.IsEnabled = editModeEnabled;
+            SaveBtn.Visibility = DiscardBtn.Visibility = (editModeEnabled) ? Visibility.Visible : Visibility.Hidden;
 
             /* Set colour of some elements */
             BackupAlias.Foreground = new SolidColorBrush(switchColour);
@@ -195,32 +226,6 @@ namespace SilentBackup
         }
 
         /// <summary>
-        ///  Called on "Save" button click event 
-        ///  Changes edit mode of UI back to 'false', so elements can't be edited by user
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void SaveBtn_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            var viewModel = (MainWindowViewModel)DataContext;
-            if (viewModel.SaveCommand.CanExecute(null)) viewModel.SaveCommand.Execute(null);
-            manageUIEditMode(false);
-            ReflectModelState();
-        }
-
-        private void EnableBtn_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            if (EnableBtn.Content.ToString() == "Disable")
-            {
-                EnableBtn.Content = "Enable";
-            }
-            else
-            {
-                EnableBtn.Content = "Disable";
-            }
-        }
-
-        /// <summary>
         ///  Adds new destination to the list of destinations in the right details panel
         ///  Changes edit mode of UI to 'true', so elements can be edited by user
         /// </summary>
@@ -233,6 +238,8 @@ namespace SilentBackup
         }
 
         private string pathPlaceholder = "specify path here...";
+
+        public bool AddModeEnabled { get; private set; }
 
         public bool EditModeEnabled { get; private set; }
 
@@ -291,14 +298,6 @@ namespace SilentBackup
                 }
             }
 
-            /*
-                        Provider provider = combo.SelectedValue as Provider;
-
-                       if (provider == Provider.DropBox)
-                        {
-
-                        }
-                        */
             // Display OpenFileDialog by calling ShowDialog method 
             Nullable<bool> result = dlg.ShowDialog();
             if (result == true)
@@ -317,5 +316,7 @@ namespace SilentBackup
             }
             ReflectModelState();
         }
+
+        
     }
 }

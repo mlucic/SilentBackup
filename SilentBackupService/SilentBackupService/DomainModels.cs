@@ -36,7 +36,7 @@ namespace SilentBackupService
         /// <summary>
         /// Path to the configuration file being used by the application
         /// </summary>
-        public static readonly string ConfigPath = "config.json";
+        public static readonly string ConfigPath = "config.xml";
         /// <summary>
         /// Logon marker path being used by the application for creating a logon event
         /// </summary>
@@ -108,6 +108,10 @@ namespace SilentBackupService
     [Serializable]
     public class BackupOperation : IDataErrorInfo
     {
+        public BackupOperation Clone()
+        {
+            return MemberwiseClone() as BackupOperation;
+        }
         /// <summary>
         /// Abstract base class defining a label that will be used to manipulate the destination path name
         /// </summary>
@@ -350,6 +354,8 @@ namespace SilentBackupService
         }
    
         #endregion
+
+
     }
 
     /// <summary>

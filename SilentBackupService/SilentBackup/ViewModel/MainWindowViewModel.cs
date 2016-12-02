@@ -92,7 +92,6 @@ namespace SilentBackup.Classes
 
             /* Set Relay Commands */
             InitRelayCommands();
-            //
         }
 
         private void UpdateBackupListUI(object sender, NotifyCollectionChangedEventArgs e)
@@ -114,14 +113,11 @@ namespace SilentBackup.Classes
             // On Add new Backup Operation command, do the following : 
             AddCommand = new RelayCommand(() =>
             {
-                var newBackOp = new BackupOperation() { Alias = "New Backup" };
-                DestinationInfo di = new DestinationInfo() { Path = new SilentBackupService.Path() { AbsolutePath = "Enter absolute path" } };
-                newBackOp.Destinations.Add(di);
+                var newId = BackOps?.Count > 0 ? BackOps.Max(x => x.Id) + 1 : 1;
+                var newBackOp = new BackupOperation() { Alias = "New Backup", Id = newId, Enabled = true };
                 newBackOp.Source.AbsolutePath = "Enter absolute path";
                 BackOps.Add(newBackOp);
                 SelectedBackup = newBackOp;
-                RaisePropertyChanged("BackOps");
-                // DestInfos.Add(di);
             }, () =>
             {
                 //return BackOps.LastOrDefault() != null ? BackOps.LastOrDefault().IsValid : false; 
@@ -145,25 +141,24 @@ namespace SilentBackup.Classes
             SaveCommand = new RelayCommand(() =>
             {
                 configuration_.BackupOperations = BackOps;
-                //configuration_.Triggers = this.dateTimeEvents_.Concat(this.usbEvents_ as IEnumerable<Event>);
-
-                //string configJson = JsonConvert.SerializeObject(configuration_, new JsonSerializerSettings()
-                //{
-                //    TypeNameHandling = TypeNameHandling.All,
-                //    TypeNameAssemblyFormat = System.Runtime.Serialization.Formatters.FormatterAssemblyStyle.Simple
-                //});
-
-                //using (var configWriter = new StreamWriter(AppInfo.ConfigPath))
-                //{
-                //    configWriter.WriteLineAsync(configJson).Wait();
-                //}
-                WriteToBinaryFile<Configuration>(AppInfo.ConfigPath, configuration_);
+                XmlSerializer.Write<Configuration>(AppInfo.ConfigPath, configuration_);
                 RaisePropertyChanged("BackOps");
             }, () => { return true; });
 
-            //SelectCommand = new RelayCommand<object>((p) => {
-                
-            //});
+            DiscardCommand = new RelayCommand<BackupOperation>((rollback) =>
+            {
+                if (rollback != null)
+                {
+                    var backup = BackOps.SingleOrDefault(x => x.Id == rollback.Id);
+                    BackOps.Insert(BackOps.IndexOf(backup), rollback);
+                    BackOps.Remove(backup);
+                    SelectedBackup = rollback;
+                }
+                else
+                {
+                    if (DeleteCommand.CanExecute(null)) DeleteCommand.Execute(null);
+                }
+            }, (rollback) => { return true; });
         }
 
         public ICommand DeleteCommand { get; private set; }
@@ -176,23 +171,17 @@ namespace SilentBackup.Classes
 
         public ICommand SaveCommand { get; private set; }
 
-        //public ICommand SelectCommand { get; private set; }
+        public ICommand DiscardCommand { get; private set; }
 
-        //using (var configWriter = new StreamWriter(AppInfo.ConfigPath))
-        //        {
-        //            configWriter.WriteLineAsync(configJson).Wait();
-        //        }
-        /** cont */
         private void OnDelete()
         {
-            int toBeDeleted = BackOps.IndexOf(selectedBackup_);
-            BackOps.Remove(selectedBackup_);
+            int toBeDeleted = BackOps.IndexOf(SelectedBackup);
+            BackOps.Remove(SelectedBackup);
             if (BackOps.Count > 0)
             {
-                selectedBackup_ = BackOps.ElementAt((toBeDeleted == 0) ? 0 : (toBeDeleted - 1));
+                SelectedBackup = BackOps.ElementAt((toBeDeleted == 0) ? 0 : (toBeDeleted - 1));
             }
-            else selectedBackup_ = null;
-            RaisePropertyChanged("SelectedBackup");
+            else SelectedBackup = null;
             RaisePropertyChanged("BackOps");
         }
 
@@ -205,77 +194,26 @@ namespace SilentBackup.Classes
         #region LoadAndSaveConfigurations
         /* Consider async implementation - Loads file OnLoad */
 
-        private void WriteToBinaryFile<T>(string filePath, T objectToWrite) where T : Configuration
-        {
-            XmlSerializer.WriteToXmlFile<Configuration>(filePath, objectToWrite);
-            return;
-            using (Stream stream = File.Open(filePath, FileMode.Create))
-            {
-                var binaryFormatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-                binaryFormatter.Serialize(stream, objectToWrite);
-            }
-        }
-
-        private T ReadFromBinaryFile<T>(string filePath) where T : Configuration
-        {
-            var retval = XmlSerializer.ReadFromXmlFile<Configuration>(filePath);
-
-            return retval as T;
-
-            using (Stream stream = File.Open(filePath, FileMode.Open))
-            {
-                var binaryFormatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-                return (T)binaryFormatter.Deserialize(stream);
-            }
-        }
-
         public void LoadConfiguration()
         {
             try
             {
-                //string configJson;
-                //using (StreamReader sr = new StreamReader(AppInfo.ConfigPath))
-                //{
-                //    configJson = sr.ReadToEnd();
-                //}
-
-                //configuration_ = JsonConvert.DeserializeObject<Configuration>(configJson, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All });
-                configuration_ = ReadFromBinaryFile<Configuration>(AppInfo.ConfigPath);
+                configuration_ = XmlSerializer.Read<Configuration>(AppInfo.ConfigPath);
             }
             catch (Exception ex)
             {
-                // No config to load, make new config
-                //string configJson = JsonConvert.SerializeObject(configuration_, new JsonSerializerSettings()
-                //{
-                //    TypeNameHandling = TypeNameHandling.All,
-                //    TypeNameAssemblyFormat = System.Runtime.Serialization.Formatters.FormatterAssemblyStyle.Simple
-                //});
-
-                //using (var configWriter = new StreamWriter(AppInfo.ConfigPath))
-                //{
-                //    configWriter.WriteLineAsync(configJson).Wait();
-                //}
+                // Do nothing
             }
 
             if (configuration_ == null)
             {
                 configuration_ = new Configuration();
-                WriteToBinaryFile<Configuration>(AppInfo.ConfigPath, configuration_);
+                XmlSerializer.Write<Configuration>(AppInfo.ConfigPath, configuration_);
             }
 
+            BackOps = new ObservableCollection<BackupOperation>(configuration_.BackupOperations);
+            BackOps.CollectionChanged += BackOps_CollectionChanged;
 
-
-
-            /* TODO: Handle file not found exception */
-            //string configJson;
-            //using (StreamReader sr = new StreamReader(AppInfo.ConfigPath))
-            //{
-            //    configJson = sr.ReadToEnd();
-            //}
-
-            //configuration_ = JsonConvert.DeserializeObject<Configuration>(configJson, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All });
-
-            backupOperations_ = new ObservableCollection<BackupOperation>(configuration_.BackupOperations);
             selectedBackup_ = configuration_.BackupOperations.Count > 0 ? configuration_.BackupOperations.ElementAt(0) : null;
             if (selectedBackup_ != null)
             {
@@ -310,9 +248,14 @@ namespace SilentBackup.Classes
                 if (value != backupOperations_)
                 {
                     backupOperations_ = value;
-                    RaisePropertyChanged("BackOps");
+
                 }
             }
+        }
+
+        private void BackOps_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            RaisePropertyChanged("BackOps");
         }
 
         /// <summary> 
@@ -357,9 +300,8 @@ namespace SilentBackup.Classes
                         //SelectedUSBEvents = sUsbEv;
                         //SelectedDateTimeEvents = sDateTimeEv;
                         DestInfos = new ObservableCollection<DestinationInfo>(selectedBackup_.Destinations);
-
-                        RaisePropertyChanged("SelectedBackOp");
-                        //DeleteCommand.RaiseCanExecuteChanged();
+                        RaisePropertyChanged("SelectedBackup");
+                        RaisePropertyChanged("BackOps");
                     }
                 }
             }
@@ -409,6 +351,7 @@ namespace SilentBackup.Classes
 
             }
         }
+
         #endregion
 
         #region PropertyChangedDefinition
@@ -417,11 +360,7 @@ namespace SilentBackup.Classes
         private void RaisePropertyChanged(
             [CallerMemberName] string caller = "")
         {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this,
-                   new PropertyChangedEventArgs(caller));
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(caller));
         }
 
         #endregion
