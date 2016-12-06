@@ -1,28 +1,24 @@
-﻿<Window x:Class="SilentBackup.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-        xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
-        xmlns:local="clr-namespace:SilentBackup.Classes"
-        xmlns:coverters="clr-namespace:SilentBackup.Converters"
-        Title="SilentBackup" Height="487" Width="809" 
-        mc:Ignorable="d"
-        >
+﻿<Window x:Class = "SilentBackup.MainWindow"
+    xmlns = "http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x = "http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc = "http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d = "http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i = "http://schemas.microsoft.com/expression/2010/interactivity"
+    xmlns:ei = "http://schemas.microsoft.com/expression/2010/interactions"
+    xmlns:local = "clr-namespace:SilentBackup.Classes"
+    xmlns:coverters = "clr-namespace:SilentBackup.Converters"
+    Title = "SilentBackup" Height = "487" Width = "809" 
+    mc:Ignorable = "d">
 
     <Window.DataContext>
         <local:MainWindowViewModel />
     </Window.DataContext>
 
-
     <!-- Shortcuts for commands  -->
     <Window.InputBindings>
-        <KeyBinding  
-            Key="D"
-            Modifiers="Control"
-            Command="{Binding DeleteCommand}"
-            />
+        <KeyBinding Key = "D"
+            Modifiers = "Control"
+            Command = "{ Binding DeleteCommand }"/>
     </Window.InputBindings>
 
     <!-- Include Styles here -->
@@ -30,79 +26,77 @@
         <ResourceDictionary>
             <!-- Define styles for couple of elements -->
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Styles/ComboStyle.xaml"/>
-                <ResourceDictionary Source="Styles/LabelsStyle.xaml"/>
-                <ResourceDictionary Source="Styles/ButtonsStyle.xaml"/>
-                <ResourceDictionary Source="Styles/ExpanderStyle.xaml"/>
-                <ResourceDictionary Source="Styles/ListBoxStyle.xaml"/>
+                <ResourceDictionary Source = "Styles/ComboStyle.xaml"/>
+                <ResourceDictionary Source = "Styles/LabelsStyle.xaml"/>
+                <ResourceDictionary Source = "Styles/ButtonsStyle.xaml"/>
+                <ResourceDictionary Source = "Styles/ExpanderStyle.xaml"/>
+                <ResourceDictionary Source = "Styles/ListBoxStyle.xaml"/>
+                <ResourceDictionary Source = "Styles/DestinationStyle.xaml"/>
+
             </ResourceDictionary.MergedDictionaries>
 
             <!-- Define commonly used colours here -->
-            <SolidColorBrush x:Key="SB_PaleBlue" Color="#FF272B2E" />
-            <SolidColorBrush x:Key="SB_Orange" Color="#FFF74F00"/>
-            <SolidColorBrush x:Key="SB_PaleWhite"   Color="#FFA0A0A0"/>
-            <SolidColorBrush x:Key="SB_DarkBlue" Color="#FF151E27"/>
-            <SolidColorBrush x:Key="SB_BlackBackground" Color="#FF151515" />
-            <SolidColorBrush x:Key="SB_DisabledProvider" Color="#FF2E3032"/>
-
-
-
+            <SolidColorBrush x:Key = "SB_PaleBlue" Color = "#FF272B2E" />
+            <SolidColorBrush x:Key = "SB_Orange" Color = "#FFF74F00"/>
+            <SolidColorBrush x:Key = "SB_PaleWhite" Color = "#FFA0A0A0"/>
+            <SolidColorBrush x:Key = "SB_DarkBlue" Color = "#FF151E27"/>
+            <SolidColorBrush x:Key = "SB_BlackBackground" Color = "#FF151515" />
+            <SolidColorBrush x:Key = "SB_DisabledProvider" Color = "#FF2E3032"/>
+            <SolidColorBrush x:Key = "SB_TextHighlight" Color = "#66666666"/>
         </ResourceDictionary>
     </Window.Resources>
 
 
     <!-- Main Grid -->
-    <Grid Background="{StaticResource SB_BlackBackground}">
-
+    <Grid Background = "{ StaticResource SB_BlackBackground }">
         <Grid.RowDefinitions>
-
-            <RowDefinition Height="10*" />
-            <RowDefinition Height="10*"/>
-            <RowDefinition Height="100*" />
-            <RowDefinition Height="20*" />
-            <RowDefinition Height="40*" />
-            <RowDefinition Height="10*" />
+            <RowDefinition Height = "10*"/>
+            <RowDefinition Height = "10*"/>
+            <RowDefinition Height = "100*"/>
+            <RowDefinition Height = "20*"/>
+            <RowDefinition Height = "40*"/>
+            <RowDefinition Height = "10*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-            <ColumnDefinition Width="6*" />
-            <ColumnDefinition Width="0.5*" />
-            <ColumnDefinition Width="6*" />
-            <ColumnDefinition  />
+            <ColumnDefinition/>
+            <ColumnDefinition Width = "6*"/>
+            <ColumnDefinition Width = "0.5*"/>
+            <ColumnDefinition Width = "6*"/>
+            <ColumnDefinition/>
         </Grid.ColumnDefinitions>
 
         <!-- Sort By Clause -->
-        <TextBlock 
-                    Grid.Row="1" 
-                    Grid.Column="1" 
-                    Name="SortByTxt"
-                    Text="SORT BY : "
-                    HorizontalAlignment="Left" 
-                    Height="Auto"
-                    VerticalAlignment="Center" Width="Auto"
-                    Background="{StaticResource SB_BlackBackground}" FontSize="12" 
-             Foreground="#FF8B8B8B"
-                   >
+        <TextBlock Name = "SortByTxt"
+            Grid.Row = "1" 
+            Grid.Column = "1" 
+            Text = "SORT BY : "
+            HorizontalAlignment = "Left" 
+            Height = "Auto"
+            VerticalAlignment = "Center" 
+            Width = "Auto"
+            Background = "{ StaticResource SB_BlackBackground }" 
+            FontSize = "12" 
+            Foreground = "#FF8B8B8B">
         </TextBlock>
 
         <!-- Main List  -->
-        <ListBox Name="backupList" 
-             KeyboardNavigation.TabNavigation="None"
-             Grid.Row="2" 
-             Grid.Column="1" 
-             BorderBrush="{StaticResource SB_Orange}"
-             ItemContainerStyle="{StaticResource ListBoxItemContainer}"
-             ItemsSource ="{Binding BackOps, Mode=TwoWay}"
-             SelectedItem="{Binding Path=SelectedBackup, Mode=TwoWay}"
-             Template="{DynamicResource ListBoxCustomTemplate}"
-             Foreground="{StaticResource SB_PaleWhite}" 
-             SelectionChanged="OnSelectionChanged">
+        <ListBox Name = "backupList" 
+             KeyboardNavigation.TabNavigation = "None"
+             Grid.Row = "2" 
+             Grid.Column = "1" 
+             BorderBrush = "{ StaticResource SB_Orange }"
+             ItemContainerStyle = "{ StaticResource ListBoxItemContainer }"
+             ItemsSource  = "{ Binding BackOps, Mode = TwoWay }"
+             SelectedItem = "{ Binding Path = SelectedBackup, Mode = TwoWay }"
+             Template = "{ DynamicResource ListBoxCustomTemplate }"
+             Foreground = "{ StaticResource SB_PaleWhite }" 
+             SelectionChanged = "OnSelectionChanged">
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <DockPanel Width="250" >
-                        <Image Height="40" Margin="0,0,10,0" Source="Assets/Images/EventIcon.png"/>
-                        <TextBlock VerticalAlignment="Center" FontSize="14">
-                            <Run Text="{Binding Alias, Mode=TwoWay}"/>
+                    <DockPanel Width = "250" >
+                        <Image Height = "40" Margin = "0,0,10,0" Source = "Assets/Images/EventIcon.png"/>
+                        <TextBlock VerticalAlignment = "Center" FontSize = "14">
+                            <Run Text = "{ Binding Alias, Mode = TwoWay }"/>
                         </TextBlock>
                     </DockPanel>
                 </DataTemplate>
@@ -110,255 +104,296 @@
         </ListBox>
 
         <!-- **************** #FF3399FF Details cell on the right ***************** -->
-        <Border Name="DetailsBorder" 
-                BorderBrush="#FF919191" BorderThickness="0,1,0,0"
-                Grid.Column="3" 
-                Grid.RowSpan="2"
-                Grid.Row="2" Background="{x:Null}"
- 
-                >
+        <Border Name = "DetailsBorder" 
+            BorderBrush = "#FF919191" 
+            BorderThickness = "0,1,0,0"
+            Grid.Column = "3" 
+            Grid.RowSpan = "2"
+            Grid.Row = "2" Background = "{x:Null}">
 
-            <!--<Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="20*" />
-                    <RowDefinition Height="20*"  />
-                    <RowDefinition Height="60*" />
-                    <RowDefinition Height="5*"  />
-                    <RowDefinition Height="40*" />
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"
-                      />
-                </Grid.ColumnDefinitions>-->
             <!-- Options -->
-            <StackPanel Width="Auto" Height="Auto" VerticalAlignment="Stretch">
+            <StackPanel Name ="Options" Width = "Auto" Height = "Auto" VerticalAlignment = "Stretch" IsEnabled = "False">
                 <!-- Alias -->
-                <StackPanel Orientation="Vertical"
-                            Grid.Row="0"
-                            Grid.Column="0">
-                    <TextBox 
-                      x:Name="BackupAlias"
-                       HorizontalAlignment="Center"
-                       VerticalAlignment="Top"
-                       FontSize="16"
-                       Height="25"  
-                       Width="250" 
-                       Foreground="White"
-                       Margin="0,10,0,0"
-                       TextAlignment="Center"
-                       Text="{Binding Path=SelectedBackup.Alias, Mode=TwoWay, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}"
-                        Validation.ErrorTemplate="{x:Null}"
-                        Background="{StaticResource SB_BlackBackground}" BorderBrush="{x:Null}" SelectionBrush="{x:Null}" IsEnabled="False" BorderThickness="0"
-                         />
-
-
-                    <!--        <Label 
-                    Foreground="{StaticResource SB_PaleWhite}" 
-                        HorizontalAlignment="Center"
-
-                    Content="{Binding ElementName=BackupAlias, Path=(Validation.Errors)[0].ErrorContent}"
-                     Width="Auto"
-                    Height="30"
-                    ></Label> -->
-
+                <StackPanel Orientation = "Vertical"
+                    Grid.Row = "0"
+                    Grid.Column = "0">
+                    <TextBox x:Name = "AliasTextBox"
+                        HorizontalAlignment = "Center"
+                        VerticalAlignment = "Top"
+                        FontSize = "16"
+                        Height = "25"  
+                        Width = "250" 
+                        Foreground = "White"
+                        Margin = "0,10,0,0"
+                        TextAlignment = "Center"
+                        Text = "{ Binding 
+                                    Path = SelectedBackup.Alias, 
+                                    Mode = TwoWay, 
+                                    ValidatesOnDataErrors = True, 
+                                    UpdateSourceTrigger = PropertyChanged }"
+                        Validation.ErrorTemplate = "{x:Null}"
+                        Background = "{ StaticResource SB_BlackBackground }" 
+                        BorderBrush = "{x:Null}" 
+                        SelectionBrush = "{ StaticResource SB_TextHighlight }" 
+                        IsEnabled = "False" 
+                        BorderThickness = "0"
+                        GotFocus="TextBox_GotFocus"
+                        LostFocus="TextBox_LostFocus"/>
                 </StackPanel>
 
                 <!-- Source -->
-                <StackPanel Grid.Row="1" Name="BackupSource" Orientation="Vertical"
-                             Background="#FF131313" DockPanel.Dock="Top">
-
-                    <StackPanel  Name="SourceStack" Orientation="Horizontal" Width="Auto" IsEnabled="False">
-
+                <StackPanel Grid.Row = "1" Name = "BackupSource" Orientation = "Vertical" Background = "#FF131313">
+                    <DockPanel Name = "SourceStack" Width = "Auto">
+                        <ComboBox Style = "{ DynamicResource CustomCombo }"
+                                    ItemsSource = "{ Binding Path = ProviderList }"
+                                    SelectedValuePath = "Value"
+                                    DisplayMemberPath = "Description"
+                                    SelectedValue = "{ Binding SelectedBackup.Source.Provider }"
+                                    DockPanel.Dock="Left"
+                                    Width="0">
+                        </ComboBox>
                         <!-- Provider field -->
-                        <Border Width="37" BorderBrush="#FF3C3C3C" HorizontalAlignment="Left"
-                                            BorderThickness="0,0,3,0" 
-                                            Padding="3,3,3,3"
-                                            Margin="5,0,10,0"
-                                          
-                                            Background="{StaticResource SB_DarkBlue}">
-                            <StackPanel Orientation="Vertical" Width="Auto" HorizontalAlignment="Left">
-
-                                <!-- Icon of the provider -->
-                                <Image  Height="32" Width="32" VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <Border Width = "37" 
+                            BorderBrush = "#FF3C3C3C" 
+                            HorizontalAlignment = "Left"
+                            BorderThickness = "0,0,3,0" 
+                            Padding = "3,3,3,3"
+                            Margin = "5,0,10,0"
+                            Background = "{ StaticResource SB_DarkBlue }">
+                            <StackPanel Orientation = "Vertical" Width = "Auto" HorizontalAlignment = "Left">
+                                <!-- Provider icon -->
+                                <Image Height = "32" Width = "32" VerticalAlignment = "Center" HorizontalAlignment = "Center">
                                     <Image.Style>
-                                        <Style TargetType="Image">
-                                            <Setter Property="Source" Value="Assets/Images/Providers/Folder32x32.png" />
-
+                                        <Style TargetType = "Image">
+                                            <Setter Property = "Source" Value = "{ Binding Path = LocalIcon }"/>
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding SelectedBackup.Source.Provider}" Value="Google">
-                                                    <Setter Property="Source" Value="Assets/Images/Providers/Google32x32.png"  />
+                                                <DataTrigger Binding = "{ Binding SelectedBackup.Source.Provider }" Value = "Google">
+                                                    <Setter Property = "Source" Value = "{ Binding Path = GoogleIcon }"/>
                                                 </DataTrigger>
-
-                                                <DataTrigger Binding="{Binding SelectedBackup.Source.Provider}" Value="DropBox">
-                                                    <Setter Property="Source" Value="Assets/Images/Providers/Dropbox32x32.png"  />
+                                                <DataTrigger Binding = "{ Binding SelectedBackup.Source.Provider }" Value = "DropBox">
+                                                    <Setter Property = "Source" Value = "{ Binding Path = DropBoxIcon }"/>
                                                 </DataTrigger>
-                                                <DataTrigger Binding="{Binding SelectedBackup.Source.Provider}" Value="SSH">
-                                                    <Setter Property="Source" Value="Assets/Images/Providers/External32x32.png"  />
+                                                <DataTrigger Binding = "{ Binding SelectedBackup.Source.Provider }" Value = "SSH">
+                                                    <Setter Property = "Source" Value = "{ Binding Path = SSHIcon }"/>
                                                 </DataTrigger>
-                                                <DataTrigger Binding="{Binding SelectedBackup.Source.Provider}" Value="OneDrive">
-                                                    <Setter Property="Source" Value="Assets/Images/Providers/OneDrive32x32.png"  />
+                                                <DataTrigger Binding = "{ Binding SelectedBackup.Source.Provider }" Value = "OneDrive">
+                                                    <Setter Property = "Source" Value = "{ Binding Path = OneDriveIcon }"/>
                                                 </DataTrigger>
                                             </Style.Triggers>
-
                                         </Style>
                                     </Image.Style>
                                 </Image>
-                                <!-- RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.SelectedProvider} -->
-                                <ComboBox Style="{DynamicResource CustomCombo}" HorizontalAlignment="Center"
-                                                      Width="Auto"
-                                                      ItemsSource="{Binding Path=ProviderList}"
-                                                      SelectedValuePath="Value"
-                                                      DisplayMemberPath="Description"
-                                                      SelectedValue="{Binding SelectedBackup.Source.Provider}"
-                                                      >
-                                </ComboBox>
-
                             </StackPanel>
                         </Border>
 
                         <!-- Path To the Source -->
-                        <TextBox 
-                           x:Name="Source"       
-                           VerticalAlignment="Top"
-                           HorizontalAlignment="Stretch"  
-                           FontSize="14"    
-                           Height="25"  
-                           Width="Auto" 
-                           Foreground="White"
-                           Background="#FF131313"
-                           Margin="0,10,0,0"
-                           Text="{Binding Path=SelectedBackup.Source.AbsolutePath,  ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}"
-                           Validation.ErrorTemplate="{x:Null}"
-                           SelectionBrush="{x:Null}"
-                           BorderThickness="0" 
-                         />
-
-                    </StackPanel>
-
+                        <TextBox x:Name = "SourceTextBox"       
+                           VerticalAlignment = "Top"
+                           HorizontalAlignment = "Stretch"  
+                           FontSize = "14"  
+                           Foreground = "#646464"
+                           Background = "#FF131313"
+                           Text = "{ Binding 
+                                Path = SelectedBackup.Source.AbsolutePath,
+                                ValidatesOnDataErrors = True,
+                                UpdateSourceTrigger = PropertyChanged }"
+                           Validation.ErrorTemplate = "{x:Null}"
+                           SelectionBrush = "{ StaticResource SB_TextHighlight }"
+                           BorderThickness = "0"
+                           GotFocus="TextBox_GotFocus"
+                           LostFocus="TextBox_LostFocus"/>
+                    </DockPanel>
                 </StackPanel>
 
                 <!-- Destinations -->
-                <StackPanel DockPanel.Dock="Top">
-                    <Grid                   
-                    Grid.Row="2"
-                    Grid.Column="0" >
-
+                <StackPanel DockPanel.Dock = "Top" Style="{StaticResource DestinationStyle}">
+                    <Grid Grid.Row = "2" Grid.Column = "0">
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="10*" />
-                            <RowDefinition Height="55*"  />
+                            <RowDefinition Height = "10*"/>
+                            <RowDefinition Height = "55*"/>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"
-                      />
+                            <ColumnDefinition Width = "*"/>
                         </Grid.ColumnDefinitions>
+
                         <!-- + Add new Destination -->
-
-                        <StackPanel Orientation="Horizontal" Grid.Row="0">
-                            <Label 
-                        Name="PlusBtn"
-                        Style="{StaticResource PaleWhiteLabelStyle}" FontWeight="Bold" Content="+ Add Destination" 
-                        MouseLeftButtonUp="addDestination">
-                                <i:Interaction.Triggers>
-                                    <i:EventTrigger EventName="MouseLeftButtonDown" >
-                                        <i:InvokeCommandAction Command="{Binding AddDestinationCommand}" />
-                                    </i:EventTrigger>
-                                </i:Interaction.Triggers>
+                        <StackPanel Orientation = "Horizontal" Grid.Row = "0">
+                            <Label Name = "AddDestinationLbl"
+                                Style = "{ StaticResource PaleWhiteLabelStyle }" 
+                                FontWeight = "Bold" 
+                                Content = "+ Add Destination" 
+                                MouseLeftButtonUp = "AddDestinationLbl_MouseLeftButtonUp"
+                                IsEnabled = "False"
+                                Visibility = "Hidden">
                             </Label>
-
-
                         </StackPanel>
 
                         <!-- List of Destinations -->
-
-                        <ListBox 
-                             Style="{StaticResource ListBoxStyle}"
-                             BorderThickness="0,0,0,0"
-                             ItemsSource ="{Binding DestInfos, Mode=TwoWay}"
-                             KeyboardNavigation.TabNavigation="None"
-                             Grid.Row="1"
-                             Name="DestinationList"
-                        >
-
+                        <ListBox Name = "DestinationList"
+                            Style = "{ StaticResource ListBoxStyle }"
+                            Template = "{ DynamicResource ListBoxCustomTemplate }"
+                            BorderThickness = "0,0,0,0"
+                            ItemsSource  = "{ Binding Path = DestInfos, Mode = TwoWay }"
+                            KeyboardNavigation.TabNavigation = "None"
+                            Grid.Row = "1">
                             <ListBox.ItemTemplate>
-                                <DataTemplate >
+                                <DataTemplate>
+                                    <StackPanel Name = "BackupDestination" Orientation = "Vertical" Background = "#FF131313">
+                                        <DockPanel Name = "DestinationStack" Width = "Auto">
+                                            <ComboBox Name = "DestinationProvider"
+                                            ItemsSource = "{ Binding 
+                                                  RelativeSource = { RelativeSource 
+                                                      FindAncestor, 
+                                                      AncestorType = { x:Type Window } },
+                                                  Path = DataContext.ProviderList }"
+                                            SelectedValuePath = "Value"
+                                            Visibility="Hidden"
+                                            DisplayMemberPath = "Description"
+                                            SelectedValue = "{ Binding Path.Provider }"
+                                            Style = "{ DynamicResource CustomCombo }"
+                                            DockPanel.Dock="Left"
+                                            Width="0">
+                                            </ComboBox>
+                                            <!-- Provider field -->
+                                            <Border Width = "40" 
+                                                BorderBrush = "#FF3C3C3C" 
+                                                HorizontalAlignment = "Left"
+                                                BorderThickness = "0,0,3,0"
+                                                Background = "{ StaticResource SB_DarkBlue }">
+                                                <StackPanel Orientation = "Vertical" Width = "Auto" HorizontalAlignment = "Left" MouseLeftButtonDown="OpenProviderCombo">
+                                                    <!-- Provider icon -->
+                                                    <Image Height = "32" Width = "32" VerticalAlignment = "Center" HorizontalAlignment = "Center" Margin="5">
+                                                        <Image.Style>
+                                                            <Style TargetType = "Image">
+                                                                <Setter Property = "Source" Value ="{ Binding RelativeSource = { RelativeSource FindAncestor, AncestorType = { x:Type Window } }, Path = DataContext.LocalIcon }"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding = "{ Binding Path.Provider }" Value = "Google">
+                                                                        <Setter Property = "Source" Value = "{ Binding RelativeSource = { RelativeSource FindAncestor, AncestorType = { x:Type Window } }, Path = DataContext.GoogleIcon }"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding = "{ Binding Path.Provider }" Value = "DropBox">
+                                                                        <Setter Property = "Source" Value = "{ Binding RelativeSource = { RelativeSource FindAncestor, AncestorType = { x:Type Window } }, Path = DataContext.DropBoxIcon }"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding = "{ Binding Path.Provider }" Value = "SSH">
+                                                                        <Setter Property = "Source" Value = "{ Binding RelativeSource = { RelativeSource FindAncestor, AncestorType = { x:Type Window } }, Path = DataContext.SSHIcon }"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding = "{ Binding Path.Provider }" Value = "OneDrive">
+                                                                        <Setter Property = "Source" Value = "{ Binding RelativeSource = { RelativeSource FindAncestor, AncestorType = { x:Type Window } }, Path = DataContext.OneDriveIcon }"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Image.Style>
+                                                    </Image>
+                                                </StackPanel>
+                                            </Border>
 
-                                    <DockPanel  Name="DestinationStack"  Width="Auto" IsEnabled="False">
-
-                                        <!-- Provider field -->
-                                        <Border Width="37" BorderBrush="#FF3C3C3C" HorizontalAlignment="Left"
-                                            BorderThickness="0,0,3,0" 
-                                            Padding="3,3,3,3"
-                                          
-                                            Background="{StaticResource SB_DarkBlue}">
-                                            <StackPanel Orientation="Vertical" Width="Auto" HorizontalAlignment="Left">
-
-                                                <!-- Icon of the provider -->
-                                                <Image  Height="32" Width="32" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                            <!-- Path To the Source -->
+                                            <TextBox x:Name = "DestinationTextBox" 
+                                            Text = "{ Binding Path.AbsolutePath }"
+                                            VerticalAlignment = "Center" 
+                                            TextAlignment = "Center"
+                                            HorizontalAlignment = "Stretch"
+                                            Foreground = "#646464"
+                                            FontSize = "14"        
+                                            Background = "{x:Null}" 
+                                            BorderBrush = "{x:Null}" 
+                                            SelectionBrush = "{ StaticResource SB_TextHighlight }"
+                                            BorderThickness = "0"
+                                            Focusable="True"
+                                            GotFocus="TextBox_GotFocus"
+                                            LostFocus="TextBox_LostFocus">
+                                            </TextBox>
+                                            <Label Name = "Browse" 
+                                            Content = "Browse"
+                                            MouseLeftButtonDown = "Browse_MouseLeftButtonDown"
+                                            DockPanel.Dock="Right"
+                                                   HorizontalAlignment="Right">
+                                            </Label>
+                                        </DockPanel>
+                                    </StackPanel>
+                                    <!--<DockPanel Name = "DestinationStack" Width = "Auto">
+                                        <ComboBox Name = "DestinationProvider"
+                                            ItemsSource = "{ Binding 
+                                                  RelativeSource = { RelativeSource 
+                                                      FindAncestor, 
+                                                      AncestorType = { x:Type Window } },
+                                                  Path = DataContext.ProviderList }"
+                                            SelectedValuePath = "Value"
+                                            Visibility="Hidden"
+                                            DisplayMemberPath = "Description"
+                                            SelectedValue = "{ Binding Path.Provider }"
+                                            Style = "{ DynamicResource CustomCombo }"
+                                            DockPanel.Dock="Left"
+                                            Width="0">
+                                        </ComboBox>
+                                        -->
+                                    <!-- Provider field -->
+                                    <!--
+                                        <Border
+                                            BorderBrush = "#FF3C3C3C"
+                                            HorizontalAlignment = "Left"
+                                            BorderThickness = "0,0,3,0"
+                                            Background = "{ StaticResource SB_DarkBlue }">
+                                            <StackPanel Orientation = "Vertical" Width = "40" HorizontalAlignment = "Left" DockPanel.Dock="Left" MouseLeftButtonDown="OpenProviderCombo">
+                                                -->
+                                    <!-- Provider icon -->
+                                    <!--
+                                                <Image Height = "32" Width = "32" VerticalAlignment = "Center" HorizontalAlignment = "Center" Margin="5">
                                                     <Image.Style>
-                                                        <Style TargetType="Image">
-                                                            <Setter Property="Source" Value="Assets/Images/Providers/Folder32x32.png" />
-
+                                                        <Style TargetType = "Image">
+                                                            <Setter Property = "Source" Value ="{ Binding RelativeSource = { RelativeSource FindAncestor, AncestorType = { x:Type Window } }, Path = DataContext.LocalIcon }"/>
                                                             <Style.Triggers>
-                                                                <DataTrigger Binding="{Binding Path.Provider}" Value="Google">
-                                                                    <Setter Property="Source" Value="Assets/Images/Providers/Google32x32.png"  />
+                                                                <DataTrigger Binding = "{ Binding Path.Provider }" Value = "Google">
+                                                                    <Setter Property = "Source" Value = "{ Binding RelativeSource = { RelativeSource FindAncestor, AncestorType = { x:Type Window } }, Path = DataContext.GoogleIcon }"/>
                                                                 </DataTrigger>
-
-                                                                <DataTrigger Binding="{Binding Path.Provider}" Value="DropBox">
-                                                                    <Setter Property="Source" Value="Assets/Images/Providers/Dropbox32x32.png"  />
+                                                                <DataTrigger Binding = "{ Binding Path.Provider }" Value = "DropBox">
+                                                                    <Setter Property = "Source" Value = "{ Binding RelativeSource = { RelativeSource FindAncestor, AncestorType = { x:Type Window } }, Path = DataContext.DropBoxIcon }"/>
                                                                 </DataTrigger>
-                                                                <DataTrigger Binding="{Binding Path.Provider}" Value="SSH">
-                                                                    <Setter Property="Source" Value="Assets/Images/Providers/External32x32.png"  />
+                                                                <DataTrigger Binding = "{ Binding Path.Provider }" Value = "SSH">
+                                                                    <Setter Property = "Source" Value = "{ Binding RelativeSource = { RelativeSource FindAncestor, AncestorType = { x:Type Window } }, Path = DataContext.SSHIcon }"/>
                                                                 </DataTrigger>
-                                                                <DataTrigger Binding="{Binding Path.Provider}" Value="OneDrive">
-                                                                    <Setter Property="Source" Value="Assets/Images/Providers/OneDrive32x32.png"  />
+                                                                <DataTrigger Binding = "{ Binding Path.Provider }" Value = "OneDrive">
+                                                                    <Setter Property = "Source" Value = "{ Binding RelativeSource = { RelativeSource FindAncestor, AncestorType = { x:Type Window } }, Path = DataContext.OneDriveIcon }"/>
                                                                 </DataTrigger>
                                                             </Style.Triggers>
-
                                                         </Style>
                                                     </Image.Style>
                                                 </Image>
-
-                                                <ComboBox Style="{DynamicResource CustomCombo}" HorizontalAlignment="Center"
-                                                      Width="Auto"
-                                                      ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.ProviderList}"
-                                                      SelectedValuePath="Value"
-                                                      DisplayMemberPath="Description"
-                                                      SelectedValue="{Binding Path.Provider}"
-                                                      Name="DestinationProvider"
-                                                      >
-                                                </ComboBox>
-
                                             </StackPanel>
                                         </Border>
 
-                                        <!-- Path To the Destination -->
-                                        <TextBox  
-                                              VerticalAlignment="Center" 
-                                              TextAlignment="Center"
-                                              HorizontalAlignment="Stretch"
-                                              Foreground="White" 
-                                              FontSize="14"        
-                                              Background="{x:Null}" 
-                                              BorderBrush="{x:Null}" 
-                                              SelectionBrush="{x:Null}"
-                                              BorderThickness="0"
-                                              Text="{Binding Path.AbsolutePath}"
-                                              LostFocus="TextBox_LostFocus"
-                                              GotFocus="TextBox_GotFocus"
-                                              >
+
+
+                                        -->
+                                    <!-- Path To the Destination -->
+                                    <!--
+                                        <TextBox x:Name = "DestinationTextBox" 
+                                            Text = "{ Binding Path.AbsolutePath }"
+                                            VerticalAlignment = "Center" 
+                                            TextAlignment = "Center"
+                                            HorizontalAlignment = "Stretch"
+                                            Foreground = "#646464"
+                                            FontSize = "14"        
+                                            Background = "{x:Null}" 
+                                            BorderBrush = "{x:Null}" 
+                                            SelectionBrush = "{ StaticResource SB_TextHighlight }"
+                                            BorderThickness = "0"
+                                            Focusable="True"
+                                            GotFocus="TextBox_GotFocus"
+                                            LostFocus="TextBox_LostFocus">
                                         </TextBox>
-                                        <Label Content="Browse"  Name="Browse" MouseLeftButtonDown="Browse_MouseLeftButtonDown" >
-
+                                        <Label Name = "Browse" 
+                                            Content = "Browse"
+                                            MouseLeftButtonDown = "Browse_MouseLeftButtonDown"
+                                            DockPanel.Dock="Right">
                                         </Label>
-                                    </DockPanel>
+                                    </DockPanel>-->
                                 </DataTemplate>
-
                             </ListBox.ItemTemplate>
                             <ListBox.ItemContainerStyle>
-                                <Style TargetType="ListBoxItem">
-                                    <Setter Property="HorizontalAlignment" Value="Stretch"/>
-                                    <Setter Property="BorderThickness" Value="0,0,0,0"/>
-                                    <Setter Property="BorderBrush" Value="#FF171717"/>
+                                <Style TargetType = "ListBoxItem">
+                                    <Setter Property = "HorizontalAlignment" Value = "Stretch"/>
+                                    <Setter Property = "BorderThickness" Value = "0,0,0,0"/>
+                                    <Setter Property = "BorderBrush" Value = "#FF171717"/>
                                 </Style>
                             </ListBox.ItemContainerStyle>
                         </ListBox>
@@ -366,207 +401,176 @@
                 </StackPanel>
 
                 <!-- Events -->
-                <StackPanel Grid.Row="5" Name="EventType" DockPanel.Dock="Top">
+                <StackPanel Name = "EventType" Grid.Row = "5" DockPanel.Dock = "Top">
                     <Grid>
                         <Grid.RowDefinitions>
-                            <RowDefinition  Height="2*"/>
+                            <RowDefinition  Height = "2*"/>
                             <!-- USB Event Button(s) -->
-                            <RowDefinition  Height="10*"/>
+                            <RowDefinition  Height = "10*"/>
                             <!-- USB Event(s) -->
-
-                            <RowDefinition Height="2*"/>
+                            <RowDefinition Height = "2*"/>
                             <!-- Date Time Event Button(s) -->
-                            <RowDefinition Height="10*"/>
+                            <RowDefinition Height = "10*"/>
                             <!-- Date Time Event(s) -->
                         </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                        </Grid.ColumnDefinitions>
-
 
                         <!-- USB Events -->
-                        <ListBox
-                             Grid.Row="2"
-                             Style="{StaticResource ListBoxStyle}"
-                             BorderThickness="0,0,0,0"
-                             ItemsSource="{Binding SelectedUSBEvents}"
-                             SelectedItem="{Binding SelectedUSBEvents.ElemenAt(0), Mode=TwoWay}">
+                        <!--<ListBox ItemsSource = "{ Binding SelectedUSBEvents }"
+                            Template = "{ DynamicResource ListBoxCustomTemplate }"
+                            SelectedItem = "{ Binding SelectedUSBEvents.ElemenAt(0), Mode = TwoWay }"
+                            Grid.Row = "2"
+                            Style = "{ StaticResource ListBoxStyle }"
+                            BorderThickness = "0,0,0,0">
                             <ListBox.ItemTemplate  >
                                 <DataTemplate >
-                                    <StackPanel  Orientation="Horizontal" Width="Auto" IsEnabled="True">
-                                        <Expander x:Name="expander" 
-                                  Width="Auto"
-                                  Header="USB EVENT" Style="{DynamicResource EventsExpander}" 
-                                                     Template="{DynamicResource ExpanderCustomEvent}"
-                                  Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{StaticResource SB_PaleWhite}">
-                                            <StackPanel Orientation="Vertical">
-                                                <TextBlock Text="{Binding UsbName}" />
-                                                <TextBlock Text="{Binding UsbserialNumber}"/>
+                                    <StackPanel Orientation = "Horizontal" Width = "Auto" IsEnabled = "True">
+                                        -->
+                        <!--<Expander x:Name = "expander" 
+                                            Width = "Auto"
+                                            Header = "USB EVENT" Style = "{ DynamicResource EventsExpander }" 
+                                            Template = "{ DynamicResource ExpanderCustomEvent }"
+                                            Background = "{x:Null}" 
+                                            BorderBrush = "{x:Null}" 
+                                            Foreground = "{ StaticResource SB_PaleWhite }">
+                                            <StackPanel Orientation = "Vertical">
+                                                <TextBlock Text = "{ Binding UsbName }" />
+                                                <TextBlock Text = "{ Binding UsbserialNumber }"/>
                                             </StackPanel>
-                                        </Expander>
+                                        </Expander>-->
+                        <!--
                                     </StackPanel>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
-                        </ListBox>
+                        </ListBox>-->
 
                         <!-- Date Time Events -->
-                        <ListBox
-                             Grid.Row="4"
-                             Style="{StaticResource ListBoxStyle}"
-                             BorderThickness="0,0,0,0"
-                             ItemsSource="{Binding SelectedDateTimeEvents}"
-                             SelectedItem="{Binding SelectedDateTimeEvents.ElemenAt(0), Mode=TwoWay}">
-                            <ListBox.ItemTemplate  >
-                                <DataTemplate >
-                                    <StackPanel  Orientation="Horizontal" Width="Auto" IsEnabled="True">
-                                        <Expander x:Name="expander" 
-                                  Width="Auto"
-                                  Header="Date Time Event" Style="{DynamicResource EventsExpander}" 
-                                                     Template="{DynamicResource ExpanderCustomEvent}"
-                                  Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{StaticResource SB_PaleWhite}">
-                                            <StackPanel Orientation="Vertical">
-                                                <TextBlock Text="{Binding Start}" />
-                                                <TextBlock Text="{Binding Next}"/>
+                        <!--<ListBox ItemsSource = "{ Binding SelectedDateTimeEvents }"
+                            Template = "{ DynamicResource ListBoxCustomTemplate }"
+                            SelectedItem = "{ Binding SelectedDateTimeEvents.ElemenAt(0), Mode = TwoWay }"
+                            Grid.Row = "4"
+                            Style = "{ StaticResource ListBoxStyle }"
+                            BorderThickness = "0,0,0,0">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation = "Horizontal" Width = "Auto" IsEnabled = "True">
+                                        -->
+                        <!--<Expander x:Name = "expander" 
+                                            Width = "Auto"
+                                            Header = "Date Time Event" 
+                                            Style = "{ DynamicResource EventsExpander }" 
+                                            Template = "{ DynamicResource ExpanderCustomEvent }"
+                                            Background = "{x:Null}" 
+                                            BorderBrush = "{x:Null}" 
+                                            Foreground = "{ StaticResource SB_PaleWhite }">
+                                            <StackPanel Orientation = "Vertical">
+                                                <TextBlock Text = "{ Binding Start }" />
+                                                <TextBlock Text = "{ Binding Next }"/>
                                             </StackPanel>
-                                        </Expander>
+                                        </Expander>-->
+                        <!--
                                     </StackPanel>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
-                        </ListBox>
-
-
+                        </ListBox>-->
                     </Grid>
                 </StackPanel>
             </StackPanel>
-            <!--</Grid>-->
         </Border>
 
         <!-- **************** Buttons on the right ***************** -->
 
-        <StackPanel Orientation="Horizontal"                 
-                Grid.Column="3" 
-                Grid.Row="4">
-            <Label 
-                    Name="SaveBtn"
-                    Content="Save"
-                    HorizontalAlignment="Right" 
-
-                    Width="Auto"
-                    Height="30"
-                    Style= "{StaticResource LabelButtonStyle}"
-                    VerticalAlignment="Top"
-                    MouseLeftButtonDown="SaveBtn_MouseLeftButtonDown" 
-                    IsEnabled="False"
-                    Visibility="Hidden"
-                   >
-                <!--<Label.InputBindings>
-                    <MouseBinding  MouseAction="LeftClick" />
-                </Label.InputBindings>-->
+        <StackPanel Orientation = "Horizontal"                 
+            Grid.Column = "3" 
+            Grid.Row = "4">
+            <Label Name = "SaveLbl"
+                Content = "Save"
+                HorizontalAlignment = "Right"
+                Width = "Auto"
+                Height = "30"
+                Style = "{ StaticResource LabelButtonStyle }"
+                VerticalAlignment = "Top"
+                MouseLeftButtonDown = "SaveLbl_MouseLeftButtonUp" 
+                IsEnabled = "False"
+                Visibility = "Hidden">
             </Label>
 
             <!-- Discard label -->
-            <Label 
-                    Name="DiscardBtn"
-                    Content="Discard"
-                    HorizontalAlignment="Right" 
-
-                    Width="Auto"
-                    Height="30"
-                    Style= "{StaticResource LabelButtonStyle}"
-                    VerticalAlignment="Top"
-                    MouseLeftButtonDown="DiscardBtn_MouseLeftButtonDown" 
-                    IsEnabled="False"
-                    Visibility="Hidden"
-                   >
-
-                <!--<Label.InputBindings>
-                    <MouseBinding  MouseAction="LeftClick" />
-                </Label.InputBindings>-->
+            <Label Name = "DiscardLbl"
+                Content = "Discard"
+                HorizontalAlignment = "Right"
+                Width = "Auto"
+                Height = "30"
+                Style =  "{ StaticResource LabelButtonStyle }"
+                VerticalAlignment = "Top"
+                MouseLeftButtonDown = "DiscardLbl_MouseLeftButtonUp" 
+                IsEnabled = "False"
+                Visibility = "Hidden">
             </Label>
-
-
         </StackPanel>
+
         <!-- **************** Icon log in the right botton corner ***************** -->
-        <StackPanel Orientation="Horizontal"                 
-                Grid.Column="3" 
-                Grid.Row="4">
-            <Image x:Name="StatusIcon"  >
+        <StackPanel Orientation = "Horizontal"                 
+            Grid.Column = "3" 
+            Grid.Row = "4">
+            <Image x:Name = "StatusIcon"  >
                 <Image.OpacityMask>
-                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                        <GradientStop Color="Black" Offset="0"/>
-                        <GradientStop Color="Gray" Offset="1"/>
+                    <LinearGradientBrush EndPoint = "0.5,1" StartPoint = "0.5,0">
+                        <GradientStop Color = "Black" Offset = "0"/>
+                        <GradientStop Color = "Gray" Offset = "1"/>
                     </LinearGradientBrush>
                 </Image.OpacityMask>
             </Image>
-
         </StackPanel>
 
         <!-- **************** Buttons = Add Edit Delete ***************** -->
+        <StackPanel Orientation = "Horizontal"
+            Grid.Column = "1" 
+            Grid.Row = "3" 
+            Margin = "0,5.618,47.679,0">
 
-        <StackPanel  Orientation="Horizontal"
-                      Grid.Column="1" Grid.Row="3" Margin="0,5.618,47.679,0" 
-                    >
             <!-- Add Label -->
-            <Label 
-                Name="AddLbl"
-                    Content="Add"
-                    HorizontalAlignment="Left" 
-                    Height="Auto"
-                    VerticalAlignment="Top" Width="40"
-                    Style= "{StaticResource LabelButtonStyle}"
-                    Margin="0,0,13,0" MouseLeftButtonDown="AddLbl_MouseLeftButtonDown">
-
-                <!--<i:Interaction.Triggers>
-                    <i:EventTrigger EventName="MouseLeftButtonDown" >
-                        <i:InvokeCommandAction Command="{Binding AddCommand}" />
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>-->
-
-
+            <Label Name = "AddLbl"
+                Content = "Add"
+                HorizontalAlignment = "Left" 
+                Height = "Auto"
+                VerticalAlignment = "Top" Width = "40"
+                Style =  "{ StaticResource LabelButtonStyle }"
+                Margin = "0,0,13,0" MouseLeftButtonUp = "AddLbl_MouseLeftButtonUp">
             </Label>
 
             <!-- Edit Label -->
-            <Label 
-                Name="EditLbl"
-                    Content="Edit"
-                    HorizontalAlignment="Left" 
-                    Height="Auto"
-                    VerticalAlignment="Top" Width="40"
-                    Margin="0,0,13,0"
-                    IsEnabled="False"
-                    Style= "{StaticResource LabelButtonStyle}"
-                   MouseLeftButtonDown="EditLbl_MouseLeftButtonDown"    
-                   >
-
+            <Label Name = "EditLbl"
+                Content = "Edit"
+                HorizontalAlignment = "Left" 
+                Height = "Auto"
+                VerticalAlignment = "Top" Width = "40"
+                Margin = "0,0,13,0"
+                IsEnabled = "False"
+                Style =  "{ StaticResource LabelButtonStyle }"
+                MouseLeftButtonUp = "EditLbl_MouseLeftButtonUp">
             </Label>
 
             <!-- Delete Label -->
-            <Label 
-                    Name="DeleteLbl"
-                    Content="Delete"
-                    HorizontalAlignment="Left" 
-                    Height="Auto"
-                    VerticalAlignment="Top" Width="Auto"
-                    Style = "{StaticResource LabelButtonStyle}"
-                    MouseLeftButtonDown="DeleteLbl_MouseLeftButtonDown" 
-                   >
-                <!-- ViewModel - call DeleteCommand on BackupList-->
-                <!--<Label.InputBindings>
-                    <MouseBinding Command="{Binding DeleteCommand}" MouseAction="LeftClick" />
-                </Label.InputBindings>-->
+            <Label Name = "DeleteLbl"
+                Content = "Delete"
+                HorizontalAlignment = "Left" 
+                Height = "Auto"
+                VerticalAlignment = "Top" Width = "Auto"
+                Style = "{ StaticResource LabelButtonStyle }"
+                MouseLeftButtonDown = "DeleteLbl_MouseLeftButtonUp">
             </Label>
-
         </StackPanel>
 
-
         <!-- **************** Rich Text Console Log ***************** -->
-        <RichTextBox
-                 Grid.Column="1"
-                 Name="ConsoleLog" 
-                 Grid.Row="4"  
-                 VerticalScrollBarVisibility="Auto" 
-                 ScrollViewer.CanContentScroll="True" Background= "#FF131313"  Focusable="False" BorderThickness="1,0"/>
-        <Rectangle Grid.ColumnSpan="5" Fill="#FF272B2E" Margin="0,0,0,0.98"/>
-
+        <RichTextBox Grid.Column = "1"
+            Name = "ConsoleLog" 
+            Grid.Row = "4"  
+            VerticalScrollBarVisibility = "Auto" 
+            ScrollViewer.CanContentScroll = "True" 
+            Background =  "#FF131313"  
+            Focusable = "False" 
+            BorderThickness = "1,0"/>
+        <Rectangle Grid.ColumnSpan = "5" Fill = "#FF272B2E" Margin = "0,0,0,0.98"/>
     </Grid>
 </Window>
 

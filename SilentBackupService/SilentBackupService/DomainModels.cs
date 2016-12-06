@@ -50,11 +50,12 @@ namespace SilentBackupService
     /// Service providers which can be interfaced with through the application
     /// </summary>
     [Serializable]
-    public enum ServiceProviders {
+    public enum ServiceProviders
+    {
         /// <summary>
         /// Local file system, including USB storage devices and other harddrives viewable from the local file system
         /// </summary>
-        [Description("Local")] 
+        [Description("Local")]
         Local,
         /// <summary>
         /// Google Drive
@@ -214,7 +215,7 @@ namespace SilentBackupService
         /// <summary>
         /// Toggle for user to activate or deactivate the operation
         /// </summary>
-        public bool Enabled { get; set; } 
+        public bool Enabled { get; set; }
         /// <summary>
         /// Toggle for whether or not to copy sub directories
         /// </summary>
@@ -255,16 +256,18 @@ namespace SilentBackupService
         }
 
         /* Goes through all the properties that need validation  */
-        public bool IsValid  {
-            get {
+        public bool IsValid
+        {
+            get
+            {
                 foreach (string property in ValidatedProperties)
-                    if(GetValidationError(property) != null)
+                    if (GetValidationError(property) != null)
                     {
                         return false;
                     }
 
                 return true;
-            }    
+            }
         }
 
         #region Validation
@@ -295,19 +298,20 @@ namespace SilentBackupService
         {
             string error = null;
 
-            foreach (DestinationInfo di in Destinations) {
+            foreach (DestinationInfo di in Destinations)
+            {
                 /* TODO: Define the logic for the rest of the providers*/
                 error = ValidateLocalPath(di.Path);
             }
 
-           return error;
+            return error;
         }
 
 
         private string ValidateLocalPath(Path path)
         {
             string error = null;
-            if (String.IsNullOrEmpty(path.AbsolutePath))  
+            if (String.IsNullOrEmpty(path.AbsolutePath))
             {
                 error = "Source can't be empty";
             }
@@ -352,7 +356,7 @@ namespace SilentBackupService
             }
             return error;
         }
-   
+
         #endregion
 
 
@@ -362,7 +366,7 @@ namespace SilentBackupService
     /// Contains detailed information regarding a path that is targeted for backup
     /// </summary>
     [Serializable]
-    public class Path
+    public class Path : ICloneable
     {
         /// <summary>
         /// User authentication information needed to access the path
@@ -379,7 +383,7 @@ namespace SilentBackupService
         /// <summary>
         /// Identifier of parent directory if needed by the service provider API. Leave empty to denote root directory
         /// </summary>
-        public string Parent { get; set; } 
+        public string Parent { get; set; }
         /// <summary>
         /// Copy-constructor for Path
         /// </summary>
@@ -395,6 +399,11 @@ namespace SilentBackupService
         /// Constructor for Path
         /// </summary>
         public Path() { }
+
+        public object Clone()
+        {
+            return MemberwiseClone();
+        }
     }
 
     /// <summary>
@@ -405,11 +414,16 @@ namespace SilentBackupService
     [XmlInclude(typeof(DropBoxAccount))]
     [XmlInclude(typeof(OneDriveAccount))]
     [XmlInclude(typeof(SSHAccount))]
-    public abstract class Account
+    public abstract class Account : ICloneable
     {
         public Account()
         {
 
+        }
+
+        public object Clone()
+        {
+            return MemberwiseClone();
         }
     }
 
@@ -426,7 +440,7 @@ namespace SilentBackupService
         /// <summary>
         /// Google user token
         /// </summary>
-        public TokenResponse UserToken { get; set; } 
+        public TokenResponse UserToken { get; set; }
         /// <summary>
         /// Constructor for GoogleDriveAccount
         /// </summary>

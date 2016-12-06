@@ -23,6 +23,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using SilentBackup.Classes;
+using System.Windows.Automation;
+using System.Windows.Automation.Peers;
 
 namespace SilentBackup
 {
@@ -31,6 +33,8 @@ namespace SilentBackup
     /// </summary>
     public partial class MainWindow : Window
     {
+        private int destinationChangingId;
+        private int operationChangingId;
         private static bool IsAdministrator()
         {
             WindowsIdentity identity = WindowsIdentity.GetCurrent();
@@ -40,6 +44,7 @@ namespace SilentBackup
 
         public MainWindow()
         {
+            destinationChangingId = -1;
             //  Forcing the application to run as admin so that it can write into the application folder in program files
             bool adminMode = false;
             if (adminMode)
@@ -66,6 +71,7 @@ namespace SilentBackup
             var viewModel = (MainWindowViewModel)DataContext;
             viewModel.LoadConfiguration();
             //viewModel.InitRelayCommands();
+            manageUIEditMode(false);
             ReflectModelState();
         }
 
@@ -74,6 +80,7 @@ namespace SilentBackup
             var viewModel = (MainWindowViewModel)DataContext;
             AddLbl.IsEnabled = !EditModeEnabled;
             DeleteLbl.IsEnabled = EditLbl.IsEnabled = (!EditModeEnabled && backupList.SelectedItem != null);
+            Options.Visibility = viewModel.SelectedBackup != null ? Visibility.Visible : Visibility.Hidden;
         }
 
         /// <summary>
@@ -81,7 +88,7 @@ namespace SilentBackup
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void AddLbl_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void AddLbl_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             var viewModel = (MainWindowViewModel)DataContext;
             if (viewModel.AddCommand.CanExecute(null)) viewModel.AddCommand.Execute(null);
@@ -91,7 +98,7 @@ namespace SilentBackup
             ReflectModelState();
         }
 
-        private void DeleteLbl_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void DeleteLbl_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             var viewModel = (MainWindowViewModel)DataContext;
             if (viewModel.DeleteCommand.CanExecute(null))
@@ -105,7 +112,7 @@ namespace SilentBackup
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void EditLbl_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void EditLbl_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             var viewModel = (MainWindowViewModel)DataContext;
             int toBeEdited = backupList.SelectedIndex;
@@ -124,21 +131,26 @@ namespace SilentBackup
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void SaveBtn_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void SaveLbl_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             var viewModel = (MainWindowViewModel)DataContext;
-            if (viewModel.SaveCommand.CanExecute(null)) viewModel.SaveCommand.Execute(null);
+
+            if (viewModel.SaveCommand.CanExecute(null))
+                viewModel.SaveCommand.Execute(null);
+
+            AddModeEnabled = false;
             manageUIEditMode(false);
             ReflectModelState();
         }
 
-        private void DiscardBtn_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void DiscardLbl_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             var viewModel = (MainWindowViewModel)DataContext;
-            if (viewModel.DiscardCommand.CanExecute(AddModeEnabled ? null : rollback))
-                viewModel.DiscardCommand.Execute(AddModeEnabled ? null : rollback);
+            var rollback = AddModeEnabled ? null : SilentBackupService.Utility.XmlSerializer.Read<BackupOperation>("rollback.xml");
+            if (viewModel.DiscardCommand.CanExecute(rollback))
+                viewModel.DiscardCommand.Execute(rollback);
 
-            if (AddModeEnabled) AddModeEnabled = false;
+            AddModeEnabled = false;
             manageUIEditMode(false);
             ReflectModelState();
         }
@@ -146,21 +158,26 @@ namespace SilentBackup
         private BackupOperation rollback;
 
         /// <summary>
-        ///   Toggles UI "Edit Mode"
+        /// Toggles UI "Edit Mode"
         /// </summary>
         /// <param name="editModeEnabled"> Specifies whether user can edit elements or not</param>
         private void manageUIEditMode(bool editModeEnabled)
         {
+            var viewModel = (MainWindowViewModel)DataContext;
+            viewModel.EditMode = editModeEnabled;
+            Options.IsEnabled = editModeEnabled;
             EditModeEnabled = editModeEnabled;
             var switchColour = (editModeEnabled) ? Color.FromArgb(255, (byte)51, (byte)153, (byte)255)
                                                   : Color.FromRgb((byte)255, (byte)255, (byte)255);
 
             /* Enable/Disable TextBoxes ( fields that you can type in ) */
-            BackupAlias.IsEnabled = editModeEnabled;
+            AliasTextBox.IsEnabled = editModeEnabled;
 
             /* Create a copy of the selected backup prior to editing for rollback purposes */
             if (editModeEnabled)
-                rollback = (backupList.SelectedItem as BackupOperation).Clone();
+            {
+                SilentBackupService.Utility.XmlSerializer.Write<BackupOperation>("rollback.xml", backupList.SelectedItem as BackupOperation);
+            }
 
             /* Disable/Enable selection of the list of backups */
             backupList.IsHitTestVisible = !editModeEnabled;
@@ -183,19 +200,22 @@ namespace SilentBackup
             EditLbl.IsEnabled = !editModeEnabled;
             AddLbl.IsEnabled = !editModeEnabled;
 
-
             /* Set visiblility of some elements */
-            SaveBtn.IsEnabled = DiscardBtn.IsEnabled = editModeEnabled;
-            SaveBtn.Visibility = DiscardBtn.Visibility = (editModeEnabled) ? Visibility.Visible : Visibility.Hidden;
+            SaveLbl.IsEnabled =
+                DiscardLbl.IsEnabled =
+                AddDestinationLbl.IsEnabled = editModeEnabled;
+            SaveLbl.Visibility =
+                DiscardLbl.Visibility =
+                AddDestinationLbl.Visibility = (editModeEnabled) ? Visibility.Visible : Visibility.Hidden;
 
             /* Set colour of some elements */
-            BackupAlias.Foreground = new SolidColorBrush(switchColour);
+            AliasTextBox.Foreground = new SolidColorBrush(switchColour);
             DetailsBorder.BorderBrush = new SolidColorBrush(switchColour);
 
             if (editModeEnabled)
             {
-                Keyboard.Focus(BackupAlias);
-                FocusManager.SetFocusedElement(this, BackupAlias); /* Set logical focus */
+                Keyboard.Focus(AliasTextBox);
+                FocusManager.SetFocusedElement(this, AliasTextBox); /* Set logical focus */
             }
         }
 
@@ -231,13 +251,15 @@ namespace SilentBackup
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void addDestination(object sender, MouseButtonEventArgs e)
+        private void AddDestinationLbl_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            DestinationList.SelectedIndex = DestinationList.Items.Count;
-            manageUIEditMode(true);
+            var viewModel = (MainWindowViewModel)DataContext;
+
+            if (viewModel.AddDestinationCommand.CanExecute(null))
+                viewModel.AddDestinationCommand.Execute(null);
         }
 
-        private string pathPlaceholder = "specify path here...";
+        public static string PathPlaceholder = "Specify path here";
 
         public bool AddModeEnabled { get; private set; }
 
@@ -250,11 +272,10 @@ namespace SilentBackup
         /// <param name="e"></param>
         private void TextBox_LostFocus(object sender, RoutedEventArgs e)
         {
-
             TextBox field = sender as TextBox;
             if (String.IsNullOrWhiteSpace(field.Text) && field.IsEnabled)
             {
-                field.Text = pathPlaceholder;
+                field.Text = PathPlaceholder.Replace("path", field.Name.Replace("TextBox", "").ToLower());
                 field.Foreground = new SolidColorBrush(Color.FromRgb((byte)100, (byte)100, (byte)100));
             }
         }
@@ -268,7 +289,7 @@ namespace SilentBackup
         private void TextBox_GotFocus(object sender, RoutedEventArgs e)
         {
             TextBox field = sender as TextBox;
-            if (field.IsEnabled && field.Text == pathPlaceholder)
+            if (field.IsEnabled && field.Text == PathPlaceholder.Replace("path", field.Name.Replace("TextBox", "").ToLower()))
             {
                 field.Text = "";
                 field.Foreground = new SolidColorBrush(Color.FromArgb(255, (byte)51, (byte)153, (byte)255));
@@ -282,7 +303,7 @@ namespace SilentBackup
         /// <param name="e"></param>
         private void Browse_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+            var dlg = new System.Windows.Forms.FolderBrowserDialog();
 
             // Determine the type of provider for selected destination
             /* Disable/Enable destinations */
@@ -299,10 +320,9 @@ namespace SilentBackup
             }
 
             // Display OpenFileDialog by calling ShowDialog method 
-            Nullable<bool> result = dlg.ShowDialog();
-            if (result == true)
+            System.Windows.Forms.DialogResult result = dlg.ShowDialog();
+            if (result.HasFlag(System.Windows.Forms.DialogResult.OK))
             {
-
 
             }
         }
@@ -317,6 +337,37 @@ namespace SilentBackup
             ReflectModelState();
         }
 
-        
+        private void OpenProviderCombo(object sender, MouseButtonEventArgs e)
+        {
+            var stackPanel = sender as StackPanel;
+            var parent = (stackPanel.Parent as Border).Parent as DockPanel;
+            var comboBox = parent.Children.OfType<ComboBox>().FirstOrDefault();
+            //var dp = DependencyProperty.RegisterAttached("", typeof())
+            //destinationChangingId = stackPanel.Parent.GetType()//(stackPanel.DataContext as SilentBackupService.Path).GetHashCode();
+            //operationChangingId = rollback.Id;
+            //var comboBox = (VisualTreeHelper.GetParent(stackPanel) as StackPanel);
+            //comboBox.DropDownOpened += ComboBox_DropDownOpened;
+            comboBox.IsDropDownOpen = true;
+            //comboBox.Visibility = comboBox.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
+
+            //ComboBoxAutomationPeer peer = UIElementAutomationPeer.CreatePeerForElement(comboBox) as ComboBoxAutomationPeer;
+
+            //ExpandCollapsePattern pattern = peer.GetPattern(PatternInterface.ExpandCollapse) as ExpandCollapsePattern;
+            //ExpandCollapsePattern pattern = peer.GetPattern(PatternInterface.ExpandCollapse) as ExpandCollapsePattern;
+
+            //pattern.Expand();
+
+            //ComboBoxAutomationPeer peer = new ComboBoxAutomationPeer(combobox);
+            //ExpandCollapsePattern provider = peer.GetPattern(PatternInterface.ExpandCollapse);
+            //provider.Expand();
+
+            //stackPanel.Children.OfType<ComboBox>().FirstOrDefault().IsEditable = true;
+            //stackPanel.Children.OfType<ComboBox>().FirstOrDefault().IsDropDownOpen = true;
+        }
+
+        private void ComboBox_DropDownOpened(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

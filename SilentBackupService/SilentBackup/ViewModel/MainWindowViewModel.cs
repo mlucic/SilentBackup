@@ -20,7 +20,6 @@ using System.Collections.Specialized;
 
 namespace SilentBackup.Classes
 {
-
     #region EventViewModels
     class EventV
     {
@@ -49,39 +48,31 @@ namespace SilentBackup.Classes
     /// </summary>
     class MainWindowViewModel : INotifyPropertyChanged
     {
-
         /** Our view Model properties are declared here */
         /// <summary> 
         /// Selected backup operation (appears in the right panel with operations details)
         /// </summary>
         private BackupOperation selectedBackup_;
-
         /// <summary> 
         ///  List of backup operations (appears in the left panels)
         /// </summary>
         private ObservableCollection<BackupOperation> backupOperations_;
-
         /// <summary> 
         ///  Contains information from JSON configuration file
         /// </summary>
         private Configuration configuration_;
-
         /// <summary> 
         ///  instance of View Model class which represents usb events 
         /// </summary>
         private ObservableCollection<USBEventV> usbEvents_;
-
         /// <summary> 
         ///  instance of View Model class which represents date time events 
         /// </summary>
         private ObservableCollection<DateTimeEventV> dateTimeEvents_;
-
         /// <summary> 
         ///  List of Destinations for selected backup operations
         /// </summary>
         private ObservableCollection<DestinationInfo> destInfos_;
-
-
         /// <summary>
         /// Loads json Configuration file with backup operations and inits RelayCommands 
         /// </summary>
@@ -94,12 +85,14 @@ namespace SilentBackup.Classes
             InitRelayCommands();
         }
 
-        private void UpdateBackupListUI(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            RaisePropertyChanged("BackOps");
-        }
-
         #region RelayCommands
+
+        public ICommand DeleteCommand { get; private set; }
+        public ICommand AddCommand { get; private set; }
+        public ICommand AddDestinationCommand { get; private set; }
+        public ICommand SwitchEnabledCommand { get; private set; }
+        public ICommand SaveCommand { get; private set; }
+        public ICommand DiscardCommand { get; private set; }
 
         /// <summary>
         ///  Sets relay commands ( Relay commands provide communication between UI events and ViewModels )
@@ -108,14 +101,28 @@ namespace SilentBackup.Classes
         {
             //BackOps.CollectionChanged += UpdateBackupListUI;
             // On Delete Backup Operation command, do the following :
-            DeleteCommand = new RelayCommand(OnDelete, CanDelete);
+            DeleteCommand = new RelayCommand(() =>
+            {
+                int toBeDeleted = BackOps.IndexOf(SelectedBackup);
+                BackOps.Remove(SelectedBackup);
+                if (BackOps.Count > 0)
+                {
+                    SelectedBackup = BackOps.ElementAt((toBeDeleted == 0) ? 0 : (toBeDeleted - 1));
+                }
+                else SelectedBackup = null;
+                SaveConfiguration();
+                RaisePropertyChanged("BackOps");
+            }, () =>
+            {
+                return selectedBackup_ != null;
+            });
 
             // On Add new Backup Operation command, do the following : 
             AddCommand = new RelayCommand(() =>
             {
                 var newId = BackOps?.Count > 0 ? BackOps.Max(x => x.Id) + 1 : 1;
                 var newBackOp = new BackupOperation() { Alias = "New Backup", Id = newId, Enabled = true };
-                newBackOp.Source.AbsolutePath = "Enter absolute path";
+                newBackOp.Source.AbsolutePath = MainWindow.PathPlaceholder.Replace("path", "source");
                 BackOps.Add(newBackOp);
                 SelectedBackup = newBackOp;
             }, () =>
@@ -127,7 +134,7 @@ namespace SilentBackup.Classes
             // On Add new Backup Destinaion command, do the following :
             AddDestinationCommand = new RelayCommand(() =>
             {
-                DestinationInfo di = new DestinationInfo() { Path = new SilentBackupService.Path() { AbsolutePath = "enter path here..." } };
+                DestinationInfo di = new DestinationInfo() { Path = new SilentBackupService.Path() { AbsolutePath = MainWindow.PathPlaceholder.Replace("path", "destination") } };
                 SelectedBackup.Destinations.Add(di);
                 DestInfos.Add(di);
             }, () => { return SelectedBackup != null; });
@@ -141,7 +148,7 @@ namespace SilentBackup.Classes
             SaveCommand = new RelayCommand(() =>
             {
                 configuration_.BackupOperations = BackOps;
-                XmlSerializer.Write<Configuration>(AppInfo.ConfigPath, configuration_);
+                SaveConfiguration();
                 RaisePropertyChanged("BackOps");
             }, () => { return true; });
 
@@ -161,34 +168,6 @@ namespace SilentBackup.Classes
             }, (rollback) => { return true; });
         }
 
-        public ICommand DeleteCommand { get; private set; }
-
-        public ICommand AddCommand { get; private set; }
-
-        public ICommand AddDestinationCommand { get; private set; }
-
-        public ICommand SwitchEnabledCommand { get; private set; }
-
-        public ICommand SaveCommand { get; private set; }
-
-        public ICommand DiscardCommand { get; private set; }
-
-        private void OnDelete()
-        {
-            int toBeDeleted = BackOps.IndexOf(SelectedBackup);
-            BackOps.Remove(SelectedBackup);
-            if (BackOps.Count > 0)
-            {
-                SelectedBackup = BackOps.ElementAt((toBeDeleted == 0) ? 0 : (toBeDeleted - 1));
-            }
-            else SelectedBackup = null;
-            RaisePropertyChanged("BackOps");
-        }
-
-        private bool CanDelete()
-        {
-            return selectedBackup_ != null;
-        }
         #endregion
 
         #region LoadAndSaveConfigurations
@@ -214,8 +193,8 @@ namespace SilentBackup.Classes
             BackOps = new ObservableCollection<BackupOperation>(configuration_.BackupOperations);
             BackOps.CollectionChanged += BackOps_CollectionChanged;
 
-            selectedBackup_ = configuration_.BackupOperations.Count > 0 ? configuration_.BackupOperations.ElementAt(0) : null;
-            if (selectedBackup_ != null)
+            SelectedBackup = configuration_.BackupOperations.Count > 0 ? configuration_.BackupOperations.ElementAt(0) : null;
+            if (SelectedBackup != null)
             {
                 DestInfos = new ObservableCollection<DestinationInfo>(selectedBackup_.Destinations);
                 /* TODO : Init events */
@@ -224,10 +203,14 @@ namespace SilentBackup.Classes
         }
 
 
-        /// <summary> *TODO
-        ///   Saves backup operations on window close (destruction)
+        /// <summary>
+        /// Saves configuration to configuration file
         /// </summary>
-        private void saveConfiguration() { }
+        private void SaveConfiguration()
+        {
+            configuration_.BackupOperations = BackOps;
+            XmlSerializer.Write<Configuration>(AppInfo.ConfigPath, configuration_);
+        }
         #endregion
 
         #region PublicProperties  
@@ -266,44 +249,45 @@ namespace SilentBackup.Classes
             get { return selectedBackup_; }
             set
             {
-                if (value != selectedBackup_)
+                //if (value != selectedBackup_)
+                //{
+                selectedBackup_ = value;
+                if (selectedBackup_ != null)
                 {
-                    selectedBackup_ = value;
-                    if (selectedBackup_ != null)
-                    {
-                        var sUsbEv = new ObservableCollection<USBEventV>();
-                        var sDateTimeEv = new ObservableCollection<DateTimeEventV>();
+                    var sUsbEv = new ObservableCollection<USBEventV>();
+                    var sDateTimeEv = new ObservableCollection<DateTimeEventV>();
 
-                        //foreach (var triggerId in selectedBackup_.Triggers)
-                        //{
+                    //foreach (var triggerId in selectedBackup_.Triggers)
+                    //{
 
-                        //    var triggerType = configuration_.Triggers.ElementAt(triggerId).GetType();
+                    //    var triggerType = configuration_.Triggers.ElementAt(triggerId).GetType();
 
-                        //    /* If can cast to USBEvent -> push to USBEventList */
-                        //    if (triggerType  == typeof(USBInsertionEvent))
-                        //    {
-                        //        var trigger = (configuration_.Triggers.ElementAt(triggerId) as USBInsertionEvent);
-                        //        sUsbEv.Add(new USBEventV() { UsbName = trigger.Name,
-                        //                                     UsbserialNumber = trigger.VolumeSerialNumber,
+                    //    /* If can cast to USBEvent -> push to USBEventList */
+                    //    if (triggerType  == typeof(USBInsertionEvent))
+                    //    {
+                    //        var trigger = (configuration_.Triggers.ElementAt(triggerId) as USBInsertionEvent);
+                    //        sUsbEv.Add(new USBEventV() { UsbName = trigger.Name,
+                    //                                     UsbserialNumber = trigger.VolumeSerialNumber,
 
-                        //                                    });
+                    //                                    });
 
-                        //    }/* Else if can cast to DateTimeEvent -> push to DateTimeList */
-                        //    else if (triggerType == typeof(DateTimeEvent))
-                        //    {
-                        //        var trigger = (configuration_.Triggers.ElementAt(triggerId) as DateTimeEvent);
+                    //    }/* Else if can cast to DateTimeEvent -> push to DateTimeList */
+                    //    else if (triggerType == typeof(DateTimeEvent))
+                    //    {
+                    //        var trigger = (configuration_.Triggers.ElementAt(triggerId) as DateTimeEvent);
 
-                        //        sDateTimeEv.Add(new DateTimeEventV { Start = trigger.Start, Next = trigger.Next});
-                        //    } 
-                        //}
+                    //        sDateTimeEv.Add(new DateTimeEventV { Start = trigger.Start, Next = trigger.Next});
+                    //    } 
+                    //}
 
-                        //SelectedUSBEvents = sUsbEv;
-                        //SelectedDateTimeEvents = sDateTimeEv;
-                        DestInfos = new ObservableCollection<DestinationInfo>(selectedBackup_.Destinations);
-                        RaisePropertyChanged("SelectedBackup");
-                        RaisePropertyChanged("BackOps");
-                    }
+                    //SelectedUSBEvents = sUsbEv;
+                    //SelectedDateTimeEvents = sDateTimeEv;
+                    DestInfos = new ObservableCollection<DestinationInfo>(selectedBackup_.Destinations);
+                    RaisePropertyChanged("SelectedBackup");
+                    RaisePropertyChanged("HasDestinations");
+                    RaisePropertyChanged("BackOps");
                 }
+                //}
             }
         }
 
@@ -364,6 +348,25 @@ namespace SilentBackup.Classes
         }
 
         #endregion
+
+        #region Icons
+
+        private string IconsDirectory { get { return System.Reflection.Assembly.GetExecutingAssembly().Location.Split(new string[] { "bin" }, StringSplitOptions.None)[0] + "Assets\\Images\\"; } }
+        public string LocalIcon { get { return IconsDirectory + "Providers\\Local32x32.png"; } }
+        public string GoogleIcon { get { return IconsDirectory + "Providers\\Google32x32.png"; } }
+        public string DropBoxIcon { get { return IconsDirectory + "Providers\\DropBox32x32.png"; } }
+        public string SSHIcon { get { return IconsDirectory + "Providers\\SSH32x32.png"; } }
+        public string OneDriveIcon { get { return IconsDirectory + "Providers\\OneDrive32x32.png"; } }
+
+        #endregion
+
+        public bool HasDestinations { get { var x = EditMode ? true : DestInfos != null && DestInfos.Count > 0; return x; } }
+        private bool _editMode;
+        public bool EditMode
+        {
+            get { return _editMode; }
+            set { _editMode = value; RaisePropertyChanged("HasDestinations"); }
+        }
     }
 }
 

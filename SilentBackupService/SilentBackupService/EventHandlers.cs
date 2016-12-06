@@ -52,17 +52,17 @@ namespace SilentBackupService
         /// <summary>
         /// Name of USB storage device
         /// </summary>
-        public string Name { get; set; }
+        public string Alias { get; set; }
         /// <summary>
         /// Constructor for USBInsertionEvent
         /// </summary> 
         /// <param name="id">Internal identifier of the event</param>
         /// <param name="vsn">Volume serial number of the USB storage device</param>
-        /// <param name="name">Name of USB</param>
-        public USBInsertionEvent(int id, string vsn, string name = null) : base(id)
+        /// <param name="alias">Name of USB</param>
+        public USBInsertionEvent(int id, string vsn, string alias = null) : base(id)
         {
             VolumeSerialNumber = vsn;
-            Name = name;
+            Alias = alias;
         }
         public USBInsertionEvent()
         {
@@ -267,7 +267,7 @@ namespace SilentBackupService
                 var dte = evn as DateTimeEvent;
                 var item = EventToCallbackMapping.SingleOrDefault(x => x.Key.Id == dte.Id);
                 EventToCallbackMapping.Remove(item.Key);
-                
+
                 // Run events that are past-due
                 if (dte.RunIfMissed)
                 {
