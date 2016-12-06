@@ -1,0 +1,41 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:SilentBackup.Styles">
+    <!--<DataTemplate x:Key="ProviderComboStlye" TargetType="{x:Type ComboBox}">
+        -->
+    <!-- Possibly other setters -->
+    <!--
+        <Setter Property="Focusable" Value="False" />
+    </DataTemplate>-->
+    <DataTemplate x:Key="ProviderComboTemplate">
+        <Border 
+            BorderBrush = "#FF3C3C3C"
+            HorizontalAlignment = "Left"
+            BorderThickness = "0,0,3,0"
+            Background = "{ Binding RelativeSource = { RelativeSource FindAncestor, AncestorType = { x:Type Window } }, Path = SB_DarkBlue }">
+            <StackPanel Orientation = "Vertical" Width = "44" HorizontalAlignment = "Left" DockPanel.Dock="Left">
+                <Image Height = "32" Width = "32" VerticalAlignment = "Center" HorizontalAlignment = "Center" Margin = "5">
+                <Image.Style>
+                    <Style TargetType = "Image">
+                        <Setter Property = "Source" Value ="{ Binding RelativeSource = { RelativeSource FindAncestor, AncestorType = { x:Type Window } }, Path = DataContext.LocalIcon }"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding = "{ Binding Path.Provider }" Value = "Google">
+                                <Setter Property = "Source" Value = "{ Binding RelativeSource = { RelativeSource FindAncestor, AncestorType = { x:Type Window } }, Path = DataContext.GoogleIcon }"/>
+                            </DataTrigger>
+                            <DataTrigger Binding = "{ Binding Path.Provider }" Value = "DropBox">
+                                <Setter Property = "Source" Value = "{ Binding RelativeSource = { RelativeSource FindAncestor, AncestorType = { x:Type Window } }, Path = DataContext.DropBoxIcon }"/>
+                            </DataTrigger>
+                            <DataTrigger Binding = "{ Binding Path.Provider }" Value = "SSH">
+                                <Setter Property = "Source" Value = "{ Binding RelativeSource = { RelativeSource FindAncestor, AncestorType = { x:Type Window } }, Path = DataContext.SSHIcon }"/>
+                            </DataTrigger>
+                            <DataTrigger Binding = "{ Binding Path.Provider }" Value = "OneDrive">
+                                <Setter Property = "Source" Value = "{ Binding RelativeSource = { RelativeSource FindAncestor, AncestorType = { x:Type Window } }, Path = DataContext.OneDriveIcon }"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Image.Style>
+            </Image>
+            </StackPanel>
+        </Border>
+    </DataTemplate>
+</ResourceDictionary>
