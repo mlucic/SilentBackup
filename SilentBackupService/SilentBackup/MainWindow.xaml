@@ -59,7 +59,7 @@
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
-            <ColumnDefinition Width = "6*"/>
+            <ColumnDefinition Width = "2*"/>
             <ColumnDefinition Width = "0.5*"/>
             <ColumnDefinition Width = "6*"/>
             <ColumnDefinition/>
@@ -142,8 +142,9 @@
                 </StackPanel>
 
                 <!-- Source -->
-                <StackPanel Grid.Row = "1" Name = "BackupSource" Orientation = "Vertical" Background = "#FF131313">
-                    <DockPanel Margin="4,0,0,0" Name = "SourceStack" Width = "Auto">
+                <StackPanel Grid.Row = "1" Name = "BackupSource" Orientation = "Vertical">
+                    <Label Content="Source" Foreground="AntiqueWhite"></Label>
+                    <DockPanel Margin="4,0,0,0" Name = "SourceStack" Width = "Auto" Background="#FF131313">
                         <ComboBox Style = "{ DynamicResource CustomCombo }"
                                     ItemsSource = "{ Binding Path = ProviderList }"
                                     SelectedValuePath = "Value"
@@ -154,7 +155,7 @@
                                     SelectionChanged="ProviderChanged">
                         </ComboBox>
                         <!-- Provider field -->
-                        <Border Width = "42" Height="44"
+                        <Border Width = "42" Height="42"
                             BorderBrush = "#FF3C3C3C"
                             BorderThickness = "0,0,2,0" 
                             Padding = "0,1,0,0"
@@ -165,7 +166,13 @@
                                 VerticalAlignment="Center" 
                                 MouseLeftButtonDown="ExpandProviderComboBox">
                                 <!-- Provider icon -->
-                                <Image Tag = "{ Binding Path = SelectedBackup.Source.Provider }" Height = "32" Width = "32" VerticalAlignment = "Center" HorizontalAlignment = "Center" MouseEnter="ResizeProviderIcon" MouseLeave="ResizeProviderIcon" Panel.ZIndex="1">
+                                <Image Tag = "{ Binding Path = SelectedBackup.Source.Provider }" 
+                                       Height = "28" Width = "28" 
+                                       VerticalAlignment = "Center" 
+                                       HorizontalAlignment = "Center" 
+                                       MouseEnter="ToggleImageHoverState" 
+                                       MouseLeave="ToggleImageHoverState" 
+                                       Panel.ZIndex="1">
                                     <Image.Style>
                                         <Style TargetType = "Image">
                                             <Setter Property = "Source" Value = "{ Binding Path = LocalIcon }"/>
@@ -189,17 +196,31 @@
                             </StackPanel>
                         </Border>
 
-                        <Label Name = "Browse" 
-                            Content = "Browse"
-                            MouseLeftButtonDown = "Browse_MouseLeftButtonDown"
+                        <Border Width = "42" Height="42"
+                            BorderBrush = "#FF3C3C3C"
+                            BorderThickness = "2,0,0,0"
+                            Padding = "0,2,0,0"
+                            Background = "{ StaticResource SB_DarkBlue }"
                             DockPanel.Dock="Right">
-                        </Label>
+                            <Label Name = "Browse"
+                                   MouseLeftButtonDown = "Browse_MouseLeftButtonDown">
+                                <Image Height = "28" Width = "28" 
+                                    Source="{ Binding RelativeSource = 
+                                                 { RelativeSource FindAncestor, AncestorType = 
+                                                     { x:Type Window }
+                                                 }, Path = DataContext.FolderIcon 
+                                             }" 
+                                    MouseEnter="ToggleImageHoverState" 
+                                    MouseLeave="ToggleImageHoverState">
+                                </Image>
+                            </Label>
+                        </Border>
 
                         <!-- Path To the Source -->
                         <TextBox x:Name = "SourceTextBox"       
                            VerticalAlignment = "Center"
                            HorizontalAlignment = "Stretch"
-                           FontSize = "14"  
+                           FontSize = "12"  
                            Foreground = "#646464"
                            Background = "#FF131313"
                            Text = "{ Binding 
@@ -215,25 +236,28 @@
                 </StackPanel>
 
                 <!-- Destinations -->
-                <StackPanel DockPanel.Dock = "Top" Style="{StaticResource DestinationStyle}">
-                    <Grid Grid.Row = "2" Grid.Column = "0" Background = "{ StaticResource SB_BlackBackground }">
+                <StackPanel Name="DestinationSP" Style="{StaticResource DestinationStyle}">
+                    <!--<Grid Grid.Row = "2" Grid.Column = "0" Background = "{ StaticResource SB_BlackBackground }">
                         <Grid.RowDefinitions>
+                            <RowDefinition Height = "10*"/>
                             <RowDefinition Height = "10*"/>
                             <RowDefinition Height = "55*"/>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width = "*"/>
-                        </Grid.ColumnDefinitions>
+                        </Grid.ColumnDefinitions>-->
 
                         <!-- + Add new Destination -->
-                        <StackPanel Orientation = "Horizontal" Grid.Row = "0">
+                        <Label Content="Destinations" Foreground="AntiqueWhite"></Label>
+                        <StackPanel Orientation = "Horizontal">
                             <Label Name = "AddDestinationLbl"
                                 Style = "{ StaticResource PaleWhiteLabelStyle }" 
                                 FontWeight = "Bold" 
                                 Content = "+ Add Destination" 
                                 MouseLeftButtonUp = "AddDestinationLbl_MouseLeftButtonUp"
                                 IsEnabled = "False"
-                                Visibility = "Hidden">
+                                Visibility = "Hidden"
+                                Height = "0">
                             </Label>
                         </StackPanel>
 
@@ -243,8 +267,7 @@
                             Template = "{ DynamicResource ListBoxCustomTemplate }"
                             BorderThickness = "0,0,0,0"
                             ItemsSource  = "{ Binding Path = DestInfos, Mode = TwoWay }"
-                            KeyboardNavigation.TabNavigation = "None"
-                            Grid.Row = "1">
+                            KeyboardNavigation.TabNavigation = "None">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <DockPanel Name = "DestinationStack" Width="Auto">
@@ -264,7 +287,7 @@
                                                 MouseLeave="CollapseProviderComboBox">
                                         </ComboBox>
                                         <!-- Provider field -->
-                                        <Border Width = "42" Height="44"
+                                        <Border Width = "42" Height="42"
                                                 BorderBrush = "#FF3C3C3C"
                                                 BorderThickness = "0,0,2,0"
                                                 Padding = "0,1,0,0"
@@ -275,7 +298,7 @@
                                                     VerticalAlignment="Center" 
                                                     MouseLeftButtonDown="ExpandProviderComboBox">
                                                 <!-- Provider icon -->
-                                                <Image Tag = "{ Binding Path = Path.Provider }" Height = "32" Width = "32" VerticalAlignment = "Center" HorizontalAlignment = "Center" MouseEnter="ResizeProviderIcon" MouseLeave="ResizeProviderIcon" Panel.ZIndex="1">
+                                                <Image Tag = "{ Binding Path = Path.Provider }" Height = "28" Width = "28" VerticalAlignment = "Center" HorizontalAlignment = "Center" MouseEnter="ToggleImageHoverState" MouseLeave="ToggleImageHoverState" Panel.ZIndex="1">
                                                     <Image.Style>
                                                         <Style TargetType = "Image">
                                                             <Setter Property = "Source" Value ="{ Binding RelativeSource = { RelativeSource FindAncestor, AncestorType = { x:Type Window } }, Path = DataContext.LocalIcon }"/>
@@ -299,19 +322,36 @@
                                             </StackPanel>
                                         </Border>
                                         <!--Browse button-->
-                                        <Label Name = "Browse" 
-                                                Content = "Browse"
-                                                MouseLeftButtonDown = "Browse_MouseLeftButtonDown"
+                                        <Border Width = "42" Height="42"
+                                                BorderBrush = "#FF3C3C3C"
+                                                BorderThickness = "2,0,0,0"
+                                                Padding = "0,2,0,0"
+                                                Background = "{ StaticResource SB_DarkBlue }"
                                                 DockPanel.Dock="Right">
-                                        </Label>
+                                            <Label Name = "Browse"
+                                                MouseLeftButtonDown = "Browse_MouseLeftButtonDown">
+                                                <Image Height = "28" Width = "28" 
+                                                       Source="{ Binding RelativeSource = 
+                                                                    { RelativeSource FindAncestor, AncestorType = 
+                                                                        { x:Type Window }
+                                                                    }, Path = DataContext.FolderIcon 
+                                                                }" 
+                                                       MouseEnter="ToggleImageHoverState" 
+                                                       MouseLeave="ToggleImageHoverState">
+                                                </Image>
+                                            </Label>
+                                        </Border>
                                         <!-- Path to the destination -->
                                         <TextBox x:Name = "DestinationTextBox" 
-                                                Text = "{ Binding Path.AbsolutePath }"
+                                                Text = "{ Binding 
+                                                    Path = Path.AbsolutePath,
+                                                    ValidatesOnDataErrors = True,
+                                                    UpdateSourceTrigger = PropertyChanged }"
                                                 VerticalAlignment = "Center" 
                                                 TextAlignment = "Left"
                                                 HorizontalAlignment = "Stretch"
                                                 Foreground = "#646464"
-                                                FontSize = "14"        
+                                                FontSize = "12"        
                                                 Background = "{x:Null}" 
                                                 BorderBrush = "{x:Null}" 
                                                 SelectionBrush = "{ StaticResource SB_TextHighlight }"
@@ -344,7 +384,7 @@
                                             HorizontalAlignment = "Left"
                                             BorderThickness = "0,0,3,0"
                                             Background = "{ StaticResource SB_DarkBlue }">
-                                            <StackPanel Orientation = "Vertical" Width = "40" HorizontalAlignment = "Left" DockPanel.Dock="Left" MouseLeftButtonDown="OpenProviderCombo">
+                                            <StackPanel Orientation = "Vertical" Width = "42" HorizontalAlignment = "Left" DockPanel.Dock="Left" MouseLeftButtonDown="OpenProviderCombo">
                                                 -->
                                     <!-- Provider icon -->
                                     <!--
@@ -409,7 +449,7 @@
                                 </Style>
                             </ListBox.ItemContainerStyle>
                         </ListBox>
-                    </Grid>
+                    <!--</Grid>-->
                 </StackPanel>
 
                 <!-- Events -->

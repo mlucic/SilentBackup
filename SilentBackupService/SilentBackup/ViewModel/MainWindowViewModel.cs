@@ -357,6 +357,7 @@ namespace SilentBackup.Classes
         public string DropBoxIcon { get { return IconsDirectory + "Providers\\DropBox32x32.png"; } }
         public string SSHIcon { get { return IconsDirectory + "Providers\\SSH32x32.png"; } }
         public string OneDriveIcon { get { return IconsDirectory + "Providers\\OneDrive32x32.png"; } }
+        public string FolderIcon { get { return IconsDirectory + "Folder32x32.png"; } }
 
         #endregion
 

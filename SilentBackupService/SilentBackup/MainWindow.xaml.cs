@@ -192,8 +192,23 @@ namespace SilentBackup
                 {
                     stack.IsEnabled = editModeEnabled;
                 }
-
             }
+
+            foreach (var label in FindVisualChildren<System.Windows.Controls.Label>(this))
+            {
+                if (label.Name == "AddDestinationLbl")
+                {
+                    if (editModeEnabled)
+                    {
+                        label.Height = 32;
+                    }
+                    else
+                    {
+                        label.Height = 0;
+                    }
+                }
+            }
+
             /* Disable/Enable Source */
             SourceStack.IsEnabled = editModeEnabled;
 
@@ -324,7 +339,10 @@ namespace SilentBackup
             System.Windows.Forms.DialogResult result = dlg.ShowDialog();
             if (result.HasFlag(System.Windows.Forms.DialogResult.OK))
             {
-
+                var a = VisualTreeHelper.GetParent(sender as System.Windows.Controls.Label);
+                var b = VisualTreeHelper.GetParent(a);
+                var c = (b as DockPanel).Children[3] as TextBox;
+                c.Text = dlg.SelectedPath;
             }
         }
 
@@ -450,6 +468,45 @@ namespace SilentBackup
             {
                 ServiceProviders provider = (ServiceProviders)(d as Image).Tag;
                 ChangeProviderIconUri(d as Image, (ServiceProviders)(d as Image).Tag);
+            }
+        }
+
+        private double ResizeImageFactor = 1.04;
+        private bool ResizeImageState = false;
+        private void ToggleImageHoverState(object sender, MouseEventArgs e)
+        {
+            if((sender as Image).Source != null)
+            {
+                Image image = sender as Image;
+                ImageSourceConverter imgConv = new ImageSourceConverter();
+                string imagePath = imgConv.ConvertToString(image.Source);
+
+                BitmapImage source = new BitmapImage();
+                source.BeginInit();
+                source.CacheOption = BitmapCacheOption.OnLoad;
+                source.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
+                if (!ResizeImageState)
+                {
+                    source.UriSource = new Uri(imagePath.Substring(0, imagePath.LastIndexOf('.')) + "Inverse.png");
+                    if (image != null)
+                    {
+                        image.Width = image.Width * ResizeImageFactor;
+                        image.Height = image.Height * ResizeImageFactor;
+                    }
+                }
+                else
+                {
+                    string[] splitStrs = { "Inverse" };
+                    source.UriSource = new Uri(imagePath.Split(splitStrs, StringSplitOptions.None)[0] + ".png");
+                    if (image != null)
+                    {
+                        image.Width = image.Width / ResizeImageFactor;
+                        image.Height = image.Height / ResizeImageFactor;
+                    }
+                }
+                source.EndInit();
+                if (image != null) image.Source = source;
+                ResizeImageState = !ResizeImageState;
             }
         }
     }
