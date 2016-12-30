@@ -143,13 +143,12 @@
 
                 <!-- Source -->
                 <StackPanel Grid.Row = "1" Name = "BackupSource" Orientation = "Vertical" Background = "#FF131313">
-                    <DockPanel Name = "SourceStack" Width = "Auto">
+                    <DockPanel Margin="4,0,0,0" Name = "SourceStack" Width = "Auto">
                         <ComboBox Style = "{ DynamicResource CustomCombo }"
                                     ItemsSource = "{ Binding Path = ProviderList }"
                                     SelectedValuePath = "Value"
                                     DisplayMemberPath = "Description"
                                     SelectedValue = "{ Binding SelectedBackup.Source.Provider }"
-                                    DockPanel.Dock="Left"
                                     Width="0" 
                                     MouseLeave="CollapseProviderComboBox"
                                     SelectionChanged="ProviderChanged">
@@ -190,10 +189,16 @@
                             </StackPanel>
                         </Border>
 
+                        <Label Name = "Browse" 
+                            Content = "Browse"
+                            MouseLeftButtonDown = "Browse_MouseLeftButtonDown"
+                            DockPanel.Dock="Right">
+                        </Label>
+
                         <!-- Path To the Source -->
                         <TextBox x:Name = "SourceTextBox"       
-                           VerticalAlignment = "Top"
-                           HorizontalAlignment = "Stretch"  
+                           VerticalAlignment = "Center"
+                           HorizontalAlignment = "Stretch"
                            FontSize = "14"  
                            Foreground = "#646464"
                            Background = "#FF131313"
@@ -239,12 +244,11 @@
                             BorderThickness = "0,0,0,0"
                             ItemsSource  = "{ Binding Path = DestInfos, Mode = TwoWay }"
                             KeyboardNavigation.TabNavigation = "None"
-                            Grid.Row = "1" AlternationCount="64">
+                            Grid.Row = "1">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                    <StackPanel Name = "BackupDestination" Orientation = "Vertical" Background = "#FF131313">
-                                        <DockPanel Name = "DestinationStack" LastChildFill="True">
-                                            <ComboBox Name = "DestinationProvider" Tag="{Binding Path = Path.Provider}"
+                                    <DockPanel Name = "DestinationStack" Width="Auto">
+                                        <ComboBox Name = "DestinationProvider"
                                                 ItemsSource = "{ Binding 
                                                       RelativeSource = { RelativeSource 
                                                           FindAncestor, 
@@ -256,53 +260,56 @@
                                                 SelectedValue = "{ Binding Path.Provider }"
                                                 SelectionChanged="ProviderChanged"
                                                 Style = "{ DynamicResource CustomCombo }"
-                                                DockPanel.Dock="Left"
+                                                Width="0"
                                                 MouseLeave="CollapseProviderComboBox">
-                                            </ComboBox>
-                                            <!-- Provider field -->
-                                            <Border Width = "42" Height="44"
+                                        </ComboBox>
+                                        <!-- Provider field -->
+                                        <Border Width = "42" Height="44"
                                                 BorderBrush = "#FF3C3C3C"
                                                 BorderThickness = "0,0,2,0"
                                                 Padding = "0,1,0,0"
                                                 Background = "{ StaticResource SB_DarkBlue }">
-                                                <StackPanel Orientation = "Vertical"
+                                            <StackPanel Orientation = "Vertical"
                                                     Width = "Auto" 
                                                     HorizontalAlignment = "Center" 
                                                     VerticalAlignment="Center" 
                                                     MouseLeftButtonDown="ExpandProviderComboBox">
-                                                    <!-- Provider icon -->
-
-
-                                                    <Image Tag = "{ Binding Path = Path.Provider }" Height = "32" Width = "32" VerticalAlignment = "Center" HorizontalAlignment = "Center" Margin="5" MouseEnter="ResizeProviderIcon" MouseLeave="ResizeProviderIcon" Panel.ZIndex="1">
-                                                        <Image.Style>
-                                                            <Style TargetType = "Image">
-                                                                <Setter Property = "Source" Value ="{ Binding RelativeSource = { RelativeSource FindAncestor, AncestorType = { x:Type Window } }, Path = DataContext.LocalIcon }"/>
-                                                                <Style.Triggers>
-                                                                    <DataTrigger Binding = "{ Binding Path.Provider }" Value = "Google">
-                                                                        <Setter Property = "Source" Value = "{ Binding RelativeSource = { RelativeSource FindAncestor, AncestorType = { x:Type Window } }, Path = DataContext.GoogleIcon }"/>
-                                                                    </DataTrigger>
-                                                                    <DataTrigger Binding = "{ Binding Path.Provider }" Value = "DropBox">
-                                                                        <Setter Property = "Source" Value = "{ Binding RelativeSource = { RelativeSource FindAncestor, AncestorType = { x:Type Window } }, Path = DataContext.DropBoxIcon }"/>
-                                                                    </DataTrigger>
-                                                                    <DataTrigger Binding = "{ Binding Path.Provider }" Value = "SSH">
-                                                                        <Setter Property = "Source" Value = "{ Binding RelativeSource = { RelativeSource FindAncestor, AncestorType = { x:Type Window } }, Path = DataContext.SSHIcon }"/>
-                                                                    </DataTrigger>
-                                                                    <DataTrigger Binding = "{ Binding Path.Provider }" Value = "OneDrive">
-                                                                        <Setter Property = "Source" Value = "{ Binding RelativeSource = { RelativeSource FindAncestor, AncestorType = { x:Type Window } }, Path = DataContext.OneDriveIcon }"/>
-                                                                    </DataTrigger>
-                                                                </Style.Triggers>
-                                                            </Style>
-                                                        </Image.Style>
-                                                    </Image>
-                                                </StackPanel>
-                                            </Border>
-
-                                            <!-- Path to the destination -->
-                                            <TextBox x:Name = "DestinationTextBox" 
+                                                <!-- Provider icon -->
+                                                <Image Tag = "{ Binding Path = Path.Provider }" Height = "32" Width = "32" VerticalAlignment = "Center" HorizontalAlignment = "Center" MouseEnter="ResizeProviderIcon" MouseLeave="ResizeProviderIcon" Panel.ZIndex="1">
+                                                    <Image.Style>
+                                                        <Style TargetType = "Image">
+                                                            <Setter Property = "Source" Value ="{ Binding RelativeSource = { RelativeSource FindAncestor, AncestorType = { x:Type Window } }, Path = DataContext.LocalIcon }"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding = "{ Binding Path.Provider }" Value = "Google">
+                                                                    <Setter Property = "Source" Value = "{ Binding RelativeSource = { RelativeSource FindAncestor, AncestorType = { x:Type Window } }, Path = DataContext.GoogleIcon }"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding = "{ Binding Path.Provider }" Value = "DropBox">
+                                                                    <Setter Property = "Source" Value = "{ Binding RelativeSource = { RelativeSource FindAncestor, AncestorType = { x:Type Window } }, Path = DataContext.DropBoxIcon }"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding = "{ Binding Path.Provider }" Value = "SSH">
+                                                                    <Setter Property = "Source" Value = "{ Binding RelativeSource = { RelativeSource FindAncestor, AncestorType = { x:Type Window } }, Path = DataContext.SSHIcon }"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding = "{ Binding Path.Provider }" Value = "OneDrive">
+                                                                    <Setter Property = "Source" Value = "{ Binding RelativeSource = { RelativeSource FindAncestor, AncestorType = { x:Type Window } }, Path = DataContext.OneDriveIcon }"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Image.Style>
+                                                </Image>
+                                            </StackPanel>
+                                        </Border>
+                                        <!--Browse button-->
+                                        <Label Name = "Browse" 
+                                                Content = "Browse"
+                                                MouseLeftButtonDown = "Browse_MouseLeftButtonDown"
+                                                DockPanel.Dock="Right">
+                                        </Label>
+                                        <!-- Path to the destination -->
+                                        <TextBox x:Name = "DestinationTextBox" 
                                                 Text = "{ Binding Path.AbsolutePath }"
                                                 VerticalAlignment = "Center" 
-                                                TextAlignment = "Center"
-                                                HorizontalAlignment = "Right"
+                                                TextAlignment = "Left"
+                                                HorizontalAlignment = "Stretch"
                                                 Foreground = "#646464"
                                                 FontSize = "14"        
                                                 Background = "{x:Null}" 
@@ -311,17 +318,9 @@
                                                 BorderThickness = "0"
                                                 Focusable="True"
                                                 GotFocus="PathTextBox_GotFocus"
-                                                LostFocus="PathTextBox_LostFocus"
-                                                Width="200">
-                                            </TextBox>
-                                            <Label Name = "Browse" 
-                                                Content = "Browse"
-                                                MouseLeftButtonDown = "Browse_MouseLeftButtonDown"
-                                                DockPanel.Dock="Right"
-                                                HorizontalAlignment="Stretch">
-                                            </Label>
-                                        </DockPanel>
-                                    </StackPanel>
+                                                LostFocus="PathTextBox_LostFocus">
+                                        </TextBox>
+                                    </DockPanel>
                                     <!--<DockPanel Name = "DestinationStack" Width = "Auto">
                                         <ComboBox Name = "DestinationProvider"
                                             ItemsSource = "{ Binding 
@@ -404,6 +403,7 @@
                             <ListBox.ItemContainerStyle>
                                 <Style TargetType = "ListBoxItem">
                                     <Setter Property = "HorizontalAlignment" Value = "Stretch"/>
+                                    <Setter Property = "HorizontalContentAlignment" Value = "Stretch"/>
                                     <Setter Property = "BorderThickness" Value = "0,0,0,0"/>
                                     <Setter Property = "BorderBrush" Value = "#FF171717"/>
                                 </Style>
