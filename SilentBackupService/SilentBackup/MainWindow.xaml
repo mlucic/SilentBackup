@@ -79,7 +79,7 @@
             Foreground = "#FF8B8B8B">
         </TextBlock>
 
-        <!-- Main List  -->
+        <!-- Backup operation list  -->
         <ListBox Name = "backupList" 
              KeyboardNavigation.TabNavigation = "None"
              Grid.Row = "2" 
@@ -90,7 +90,7 @@
              SelectedItem = "{ Binding Path = SelectedBackup, Mode = TwoWay }"
              Template = "{ DynamicResource ListBoxCustomTemplate }"
              Foreground = "{ StaticResource SB_PaleWhite }" 
-             SelectionChanged = "OnSelectionChanged">
+             SelectionChanged = "OnBackupOperationSelectionChanged">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <DockPanel Width = "250" >
@@ -137,8 +137,8 @@
                         SelectionBrush = "{ StaticResource SB_TextHighlight }" 
                         IsEnabled = "False" 
                         BorderThickness = "0"
-                        GotFocus="TextBox_GotFocus"
-                        LostFocus="TextBox_LostFocus"/>
+                        GotFocus="PathTextBox_GotFocus"
+                        LostFocus="PathTextBox_LostFocus"/>
                 </StackPanel>
 
                 <!-- Source -->
@@ -150,19 +150,23 @@
                                     DisplayMemberPath = "Description"
                                     SelectedValue = "{ Binding SelectedBackup.Source.Provider }"
                                     DockPanel.Dock="Left"
-                                    Width="0">
+                                    Width="0" 
+                                    MouseLeave="CollapseProviderComboBox"
+                                    SelectionChanged="ProviderChanged">
                         </ComboBox>
                         <!-- Provider field -->
-                        <Border Width = "37" 
-                            BorderBrush = "#FF3C3C3C" 
-                            HorizontalAlignment = "Left"
-                            BorderThickness = "0,0,3,0" 
-                            Padding = "3,3,3,3"
-                            Margin = "5,0,10,0"
+                        <Border Width = "42" Height="44"
+                            BorderBrush = "#FF3C3C3C"
+                            BorderThickness = "0,0,2,0" 
+                            Padding = "0,1,0,0"
                             Background = "{ StaticResource SB_DarkBlue }">
-                            <StackPanel Orientation = "Vertical" Width = "Auto" HorizontalAlignment = "Left">
+                            <StackPanel Orientation = "Vertical"
+                                Width = "Auto" 
+                                HorizontalAlignment = "Center" 
+                                VerticalAlignment="Center" 
+                                MouseLeftButtonDown="ExpandProviderComboBox">
                                 <!-- Provider icon -->
-                                <Image Height = "32" Width = "32" VerticalAlignment = "Center" HorizontalAlignment = "Center">
+                                <Image Tag = "{ Binding Path = SelectedBackup.Source.Provider }" Height = "32" Width = "32" VerticalAlignment = "Center" HorizontalAlignment = "Center" MouseEnter="ResizeProviderIcon" MouseLeave="ResizeProviderIcon" Panel.ZIndex="1">
                                     <Image.Style>
                                         <Style TargetType = "Image">
                                             <Setter Property = "Source" Value = "{ Binding Path = LocalIcon }"/>
@@ -200,14 +204,14 @@
                            Validation.ErrorTemplate = "{x:Null}"
                            SelectionBrush = "{ StaticResource SB_TextHighlight }"
                            BorderThickness = "0"
-                           GotFocus="TextBox_GotFocus"
-                           LostFocus="TextBox_LostFocus"/>
+                           GotFocus="PathTextBox_GotFocus"
+                           LostFocus="PathTextBox_LostFocus"/>
                     </DockPanel>
                 </StackPanel>
 
                 <!-- Destinations -->
                 <StackPanel DockPanel.Dock = "Top" Style="{StaticResource DestinationStyle}">
-                    <Grid Grid.Row = "2" Grid.Column = "0">
+                    <Grid Grid.Row = "2" Grid.Column = "0" Background = "{ StaticResource SB_BlackBackground }">
                         <Grid.RowDefinitions>
                             <RowDefinition Height = "10*"/>
                             <RowDefinition Height = "55*"/>
@@ -235,34 +239,41 @@
                             BorderThickness = "0,0,0,0"
                             ItemsSource  = "{ Binding Path = DestInfos, Mode = TwoWay }"
                             KeyboardNavigation.TabNavigation = "None"
-                            Grid.Row = "1">
+                            Grid.Row = "1" AlternationCount="64">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel Name = "BackupDestination" Orientation = "Vertical" Background = "#FF131313">
-                                        <DockPanel Name = "DestinationStack" Width = "Auto">
-                                            <ComboBox Name = "DestinationProvider"
-                                            ItemsSource = "{ Binding 
-                                                  RelativeSource = { RelativeSource 
-                                                      FindAncestor, 
-                                                      AncestorType = { x:Type Window } },
-                                                  Path = DataContext.ProviderList }"
-                                            SelectedValuePath = "Value"
-                                            Visibility="Hidden"
-                                            DisplayMemberPath = "Description"
-                                            SelectedValue = "{ Binding Path.Provider }"
-                                            Style = "{ DynamicResource CustomCombo }"
-                                            DockPanel.Dock="Left"
-                                            Width="0">
+                                        <DockPanel Name = "DestinationStack" LastChildFill="True">
+                                            <ComboBox Name = "DestinationProvider" Tag="{Binding Path = Path.Provider}"
+                                                ItemsSource = "{ Binding 
+                                                      RelativeSource = { RelativeSource 
+                                                          FindAncestor, 
+                                                          AncestorType = { x:Type Window } },
+                                                      Path = DataContext.ProviderList }"
+                                                SelectedValuePath = "Value"
+                                                Visibility="Hidden"
+                                                DisplayMemberPath = "Description"
+                                                SelectedValue = "{ Binding Path.Provider }"
+                                                SelectionChanged="ProviderChanged"
+                                                Style = "{ DynamicResource CustomCombo }"
+                                                DockPanel.Dock="Left"
+                                                MouseLeave="CollapseProviderComboBox">
                                             </ComboBox>
                                             <!-- Provider field -->
-                                            <Border Width = "40" 
-                                                BorderBrush = "#FF3C3C3C" 
-                                                HorizontalAlignment = "Left"
-                                                BorderThickness = "0,0,3,0"
+                                            <Border Width = "42" Height="44"
+                                                BorderBrush = "#FF3C3C3C"
+                                                BorderThickness = "0,0,2,0"
+                                                Padding = "0,1,0,0"
                                                 Background = "{ StaticResource SB_DarkBlue }">
-                                                <StackPanel Orientation = "Vertical" Width = "Auto" HorizontalAlignment = "Left" MouseLeftButtonDown="OpenProviderCombo">
+                                                <StackPanel Orientation = "Vertical"
+                                                    Width = "Auto" 
+                                                    HorizontalAlignment = "Center" 
+                                                    VerticalAlignment="Center" 
+                                                    MouseLeftButtonDown="ExpandProviderComboBox">
                                                     <!-- Provider icon -->
-                                                    <Image Height = "32" Width = "32" VerticalAlignment = "Center" HorizontalAlignment = "Center" Margin="5">
+
+
+                                                    <Image Tag = "{ Binding Path = Path.Provider }" Height = "32" Width = "32" VerticalAlignment = "Center" HorizontalAlignment = "Center" Margin="5" MouseEnter="ResizeProviderIcon" MouseLeave="ResizeProviderIcon" Panel.ZIndex="1">
                                                         <Image.Style>
                                                             <Style TargetType = "Image">
                                                                 <Setter Property = "Source" Value ="{ Binding RelativeSource = { RelativeSource FindAncestor, AncestorType = { x:Type Window } }, Path = DataContext.LocalIcon }"/>
@@ -286,27 +297,28 @@
                                                 </StackPanel>
                                             </Border>
 
-                                            <!-- Path To the Source -->
+                                            <!-- Path to the destination -->
                                             <TextBox x:Name = "DestinationTextBox" 
-                                            Text = "{ Binding Path.AbsolutePath }"
-                                            VerticalAlignment = "Center" 
-                                            TextAlignment = "Center"
-                                            HorizontalAlignment = "Stretch"
-                                            Foreground = "#646464"
-                                            FontSize = "14"        
-                                            Background = "{x:Null}" 
-                                            BorderBrush = "{x:Null}" 
-                                            SelectionBrush = "{ StaticResource SB_TextHighlight }"
-                                            BorderThickness = "0"
-                                            Focusable="True"
-                                            GotFocus="TextBox_GotFocus"
-                                            LostFocus="TextBox_LostFocus">
+                                                Text = "{ Binding Path.AbsolutePath }"
+                                                VerticalAlignment = "Center" 
+                                                TextAlignment = "Center"
+                                                HorizontalAlignment = "Right"
+                                                Foreground = "#646464"
+                                                FontSize = "14"        
+                                                Background = "{x:Null}" 
+                                                BorderBrush = "{x:Null}" 
+                                                SelectionBrush = "{ StaticResource SB_TextHighlight }"
+                                                BorderThickness = "0"
+                                                Focusable="True"
+                                                GotFocus="PathTextBox_GotFocus"
+                                                LostFocus="PathTextBox_LostFocus"
+                                                Width="200">
                                             </TextBox>
                                             <Label Name = "Browse" 
-                                            Content = "Browse"
-                                            MouseLeftButtonDown = "Browse_MouseLeftButtonDown"
-                                            DockPanel.Dock="Right"
-                                                   HorizontalAlignment="Right">
+                                                Content = "Browse"
+                                                MouseLeftButtonDown = "Browse_MouseLeftButtonDown"
+                                                DockPanel.Dock="Right"
+                                                HorizontalAlignment="Stretch">
                                             </Label>
                                         </DockPanel>
                                     </StackPanel>

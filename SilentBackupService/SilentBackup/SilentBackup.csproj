@@ -148,9 +148,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SilentBackupService\BackupService.csproj">
+    <ProjectReference Include="..\SilentBackupService\SilentBackupService.csproj">
       <Project>{65E16939-3AAF-4996-A8B8-B4852A063437}</Project>
-      <Name>BackupService</Name>
+      <Name>SilentBackupService</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

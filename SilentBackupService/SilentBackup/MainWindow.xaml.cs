@@ -25,6 +25,8 @@ using System.Windows.Shapes;
 using SilentBackup.Classes;
 using System.Windows.Automation;
 using System.Windows.Automation.Peers;
+using System.ComponentModel;
+using static SilentBackupService.BackupOperation;
 
 namespace SilentBackup
 {
@@ -266,11 +268,11 @@ namespace SilentBackup
         public bool EditModeEnabled { get; private set; }
 
         /// <summary>
-        ///  Adds Placeholder to textBox
+        ///  Adds Placeholder to textBox for path
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void TextBox_LostFocus(object sender, RoutedEventArgs e)
+        private void PathTextBox_LostFocus(object sender, RoutedEventArgs e)
         {
             TextBox field = sender as TextBox;
             if (String.IsNullOrWhiteSpace(field.Text) && field.IsEnabled)
@@ -280,13 +282,12 @@ namespace SilentBackup
             }
         }
 
-
         /// <summary>
-        ///  Remove placeholder from TextBox
+        ///  Remove placeholder from TextBox for path
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void TextBox_GotFocus(object sender, RoutedEventArgs e)
+        private void PathTextBox_GotFocus(object sender, RoutedEventArgs e)
         {
             TextBox field = sender as TextBox;
             if (field.IsEnabled && field.Text == PathPlaceholder.Replace("path", field.Name.Replace("TextBox", "").ToLower()))
@@ -327,7 +328,7 @@ namespace SilentBackup
             }
         }
 
-        private void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void OnBackupOperationSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var viewModel = (MainWindowViewModel)DataContext;
             foreach (var item in e.AddedItems)
@@ -337,37 +338,119 @@ namespace SilentBackup
             ReflectModelState();
         }
 
-        private void OpenProviderCombo(object sender, MouseButtonEventArgs e)
+        private void ExpandProviderComboBox(object sender, MouseButtonEventArgs e)
         {
             var stackPanel = sender as StackPanel;
             var parent = (stackPanel.Parent as Border).Parent as DockPanel;
             var comboBox = parent.Children.OfType<ComboBox>().FirstOrDefault();
-            //var dp = DependencyProperty.RegisterAttached("", typeof())
-            //destinationChangingId = stackPanel.Parent.GetType()//(stackPanel.DataContext as SilentBackupService.Path).GetHashCode();
-            //operationChangingId = rollback.Id;
-            //var comboBox = (VisualTreeHelper.GetParent(stackPanel) as StackPanel);
-            //comboBox.DropDownOpened += ComboBox_DropDownOpened;
             comboBox.IsDropDownOpen = true;
-            //comboBox.Visibility = comboBox.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
-
-            //ComboBoxAutomationPeer peer = UIElementAutomationPeer.CreatePeerForElement(comboBox) as ComboBoxAutomationPeer;
-
-            //ExpandCollapsePattern pattern = peer.GetPattern(PatternInterface.ExpandCollapse) as ExpandCollapsePattern;
-            //ExpandCollapsePattern pattern = peer.GetPattern(PatternInterface.ExpandCollapse) as ExpandCollapsePattern;
-
-            //pattern.Expand();
-
-            //ComboBoxAutomationPeer peer = new ComboBoxAutomationPeer(combobox);
-            //ExpandCollapsePattern provider = peer.GetPattern(PatternInterface.ExpandCollapse);
-            //provider.Expand();
-
-            //stackPanel.Children.OfType<ComboBox>().FirstOrDefault().IsEditable = true;
-            //stackPanel.Children.OfType<ComboBox>().FirstOrDefault().IsDropDownOpen = true;
+        }
+        private void CollapseProviderComboBox(object sender, MouseEventArgs e)
+        {
+            (sender as ComboBox).IsDropDownOpen = false;
+        }
+    
+        private double ResizeProviderIconFactor = 1.04;
+        private bool ResizeProviderIconState = false;
+        private void ResizeProviderIcon(object sender, MouseEventArgs e)
+        {
+            var viewModel = (MainWindowViewModel)DataContext;
+            string providerIconPath = "";
+            Image image = sender as Image;
+            switch ((ServiceProviders)image.Tag)
+            {
+                case ServiceProviders.Local:
+                    providerIconPath = viewModel.LocalIcon;
+                    break;
+                case ServiceProviders.Google:
+                    providerIconPath = viewModel.GoogleIcon;
+                    break;
+                case ServiceProviders.OneDrive:
+                    providerIconPath = viewModel.OneDriveIcon;
+                    break;
+                case ServiceProviders.DropBox:
+                    providerIconPath = viewModel.DropBoxIcon;
+                    break;
+                case ServiceProviders.SSH:
+                    providerIconPath = viewModel.SSHIcon;
+                    break;
+                default:
+                    throw new Exception("Invalid provider specified in selected backups source");
+            }
+            BitmapImage source = new BitmapImage();
+            source.BeginInit();
+            source.CacheOption = BitmapCacheOption.OnLoad;
+            source.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
+            if (!ResizeProviderIconState)
+            {
+                source.UriSource = new Uri(providerIconPath.Substring(0, providerIconPath.LastIndexOf('.')) + "Inverse.png");
+                if (image != null)
+                {
+                    image.Width = image.Width * ResizeProviderIconFactor;
+                    image.Height = image.Height * ResizeProviderIconFactor;
+                }
+            }
+            else
+            {
+                source.UriSource = new Uri(providerIconPath);
+                if (image != null)
+                {
+                    image.Width = image.Width / ResizeProviderIconFactor;
+                    image.Height = image.Height / ResizeProviderIconFactor;
+                }
+            }
+            source.EndInit();
+            if (image != null) image.Source = source;
+            ResizeProviderIconState = !ResizeProviderIconState;
         }
 
-        private void ComboBox_DropDownOpened(object sender, EventArgs e)
+        private void ChangeProviderIconUri(Image img, ServiceProviders provider)
         {
-            throw new NotImplementedException();
+            var viewModel = (MainWindowViewModel)DataContext;
+            BitmapImage source = new BitmapImage();
+            source.BeginInit();
+            source.CacheOption = BitmapCacheOption.OnLoad;
+            source.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
+
+            string providerIconPath = "";
+            switch (provider)
+            {
+                case ServiceProviders.Local:
+                    providerIconPath = viewModel.LocalIcon;
+                    break;
+                case ServiceProviders.Google:
+                    providerIconPath = viewModel.GoogleIcon;
+                    break;
+                case ServiceProviders.OneDrive:
+                    providerIconPath = viewModel.OneDriveIcon;
+                    break;
+                case ServiceProviders.DropBox:
+                    providerIconPath = viewModel.DropBoxIcon;
+                    break;
+                case ServiceProviders.SSH:
+                    providerIconPath = viewModel.SSHIcon;
+                    break;
+                default:
+                    throw new Exception("Invalid provider specified in selected backups source");
+            }
+
+            source.UriSource = new Uri(providerIconPath);
+            source.EndInit();
+            img.Source = source;
+        }
+
+        private void ProviderChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var viewModel = (MainWindowViewModel)DataContext;
+            var a = VisualTreeHelper.GetParent(sender as ComboBox);
+            var b = (a as DockPanel).Children[1];
+            var c = (b as Border).Child;
+            var d = (c as StackPanel).Children[0];
+            if ((d as Image).Tag != null)
+            {
+                ServiceProviders provider = (ServiceProviders)(d as Image).Tag;
+                ChangeProviderIconUri(d as Image, (ServiceProviders)(d as Image).Tag);
+            }
         }
     }
 }
